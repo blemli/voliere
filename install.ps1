@@ -16,8 +16,6 @@ function New-TemporaryDirectory {
 
 Install-Chocolatey
 choco install git
-mkdir ~/.ssh
-ssh-keyscan -t rsa domain.example >> ~/.ssh/known_hosts
 New-TemporaryDirectory | set-location
 git clone https://github.com/blemli/voliere
 cd voliere
