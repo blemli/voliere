@@ -381,10 +381,12 @@ KquLsKTtdF7kb04awEVb88KR9zJzxmS6AohvGMAruCKQkrOmU9c8Qzrtz1A9oYb6CaWCdJ5QqS2U
 V2Am9Kja2x2bKtf7OwjJHGpskuTJe0qh8gZITzmCVL08cngKeYKJKzYECpdhXehXZFY2VlVG7ZXf
 0YRDk0afP+lxwYDzKWYnhzDejuVhdiyK5sA8A4sFo+qRZekTWQ7df3pLpHnv5uN3RSp/c967K1K5
 ZVPHQPV9qEMEVFbX7Wyqbus0hUDhw+4tt/8AFeoOPB4UAAA=</Form>
-  <Code><![CDATA[
+  <Code><![CDATA[. .\tasks.ps1
+
+
 function Gugus { }
 
-$Tasks = [@{ Description = "Unterstützungsprogramme installieren"; function = Install-Helpers }]
+$Tasks = @{"Unterstützungsprogramme installieren"=Install-Helpers }
 
 function Install-Helpers
 {
@@ -753,9 +755,6 @@ $taskbox_SelectedIndexChanged={
 	
 }
 ]]></Code>
-  <Bookmarks />
-  <BreakPoints />
-  <TracePoints />
   <Mode>1</Mode>
   <Assemblies />
 </File>

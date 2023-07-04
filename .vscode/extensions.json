@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "ms-vscode.powershell",
+        "dougfinke.vscode-psstackoverflow",
+        "gruntfuggly.todo-tree",
+        "christian-kohler.path-intellisense",
+        "sandcastle.vscode-open",
+        "sleistner.vscode-fileutils",
+        "streetsidesoftware.code-spell-checker",
+        "wmaurer.change-case",
+        "aaron-bond.better-comments",
+        "chouzz.vscode-better-align",
+        "vscode-icons-team.vscode-icons",
+        "ironmansoftware.powershellprotools",
+        "ahgood.shift-shift",
+        "streetsidesoftware.code-spell-checker-german"
+    ]
+}
