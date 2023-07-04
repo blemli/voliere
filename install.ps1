@@ -5,6 +5,11 @@ Function Install-Chocolatey {
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     choco feature enable -n=allowGlobalConfirmation
 }
+function New-TemporaryDirectory {
+    $parent = [System.IO.Path]::GetTempPath()
+    $name = [System.IO.Path]::GetRandomFileName()
+    New-Item -ItemType Directory -Path (Join-Path $parent $name)
+}
 
 
 Install-Chocolatey
