@@ -390,8 +390,9 @@ $Start_Click={
 	$computername.Enabled = $false
 	$Start.Enabled = $false
 	$progressbar.Style = 'Marquee'
+	$richtextbox1.AppendText("`nstarting...")
 	$Tasks.GetEnumerator() | ForEach-Object {
-		$Task=$_.Key
+		$Task = $_.Key
 		Write-Host $Task
 		Invoke-Command $_.Value
 		$richtextbox1.AppendText("`n$Task")

@@ -1,8 +1,7 @@
 . .\functions.ps1
-$global:computername="gugus"
 
 $Tasks = [ordered]@{
-    "Computer umbenennen"={Rename-Computer -NewName $computername.text -Whatif}
+    "Computer umbenennen"={Rename-Computer -NewName $computername}
     "Unterstützungsprogramme installieren"={Install-Helpers};
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
@@ -26,11 +25,8 @@ $Tasks = [ordered]@{
     "Acrobat installieren"={choco install adobereader -params '"/UpdateMode 0"'};
     "Acrobat als Standard"={Set-DefaultPDFReader};
     "Office installieren"={Install-Office};
-    "ClassicShell (OpenShell) installieren"={sudo choco install open-shell};
+    "ClassicShell (OpenShell) installieren"={choco install open-shell};
     "Papercut installieren"={Install-Papercut};
     "DeepFreeze installieren"={Install-DeepFreeze};
     "Helper deinstallieren"={Uninstall-Helpers};
 }
-
-#Write-Host $Tasks
-

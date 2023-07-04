@@ -98,7 +98,7 @@ Function Install-Papercut {
 
 Function Install-DeepFreeze {
     #todo copy exe
-    sudo .\DFStd.exe /Install /Thawed /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot
+    .\DFStd.exe /Install /Thawed /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot
     #todo: activate license
 }
 
@@ -191,14 +191,12 @@ public class Params
 
 
 Function Disable-PrinterInstallation {
-    sudo New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name NoAddPrinter -Value 1 -Type DWORD
+    New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name NoAddPrinter -Value 1 -Type DWORD
 }
 
 Function Disable-WindowsUpdate {
-    sudo
     get-service -DisplayName "Windows Update" | Stop-Service -Force
     get-service -DisplayName "Windows Update" | Set-Service -StartupType "Disabled"
-    exit
 }
 
 
