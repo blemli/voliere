@@ -21,4 +21,5 @@ ssh-keyscan -t rsa domain.example >> ~/.ssh/known_hosts
 New-TemporaryDirectory | set-location
 git clone https://github.com/blemli/voliere
 cd voliere
+git submodule update --init --recursive
 .\Optimize-KioskComputer.ps1
