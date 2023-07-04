@@ -56,7 +56,8 @@ Function Uninstall-Bloat {
     Get-AppxPackage "MicrosoftTeams" -AllUsers | Remove-AppxPackage -AllUsers
 }
 Function Install-Office {
-    choco install office365business
+    #choco install office365business
+    .\assets\office\setup.exe /configure .\assets\office\configuration.xml
 }
 Function Install-GoogleChrome {
     choco install googlechrome
@@ -91,7 +92,7 @@ Function Install-Papercut {
 
 Function Install-DeepFreeze {
     #todo copy exe
-    .\DFStd.exe /Install /Thawed /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot
+    .\assets\DeepFreeze\DFStd.exe /Install /Thawed /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot
     #todo: activate license
 }
 
