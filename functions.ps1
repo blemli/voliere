@@ -1,12 +1,12 @@
 Import-Module -Name "./Win10-Initial-Setup-Script/Win10.psm1"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
 
-FUnction Install-Helpers {
+Function Install-Helpers {
     Install-Chocolatey
     choco install git
     New-TemporaryDirectory | set-location
-    git clone git@github.com/blemli/kaefig.git
-    cd kaefig
+    git clone git@github.com/blemli/voliere.git
+    cd voliere
 }
 
 Function Uninstall-Helpers{
@@ -202,13 +202,15 @@ Function Disable-WindowsUpdate {
 
 Function Set-DefaultBrowser {
     #choco install setuserfta
-    $protocols=@(".htm",
+<#     $protocols=@(".htm",
     ".html",
     ".pdf",
     "http",
     "https")
     foreach ($protocol in $protocols) {
         SetUserFTA $protocol "ChromeHTML"
+    } #>
+    #todo: Implement
 }
 
 Function uninstall-Chocolatey {
