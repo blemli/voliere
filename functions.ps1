@@ -1,13 +1,6 @@
 Import-Module -Name "./Win10-Initial-Setup-Script/Win10.psm1"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
 
-Function Install-Helpers {
-    Install-Chocolatey
-    choco install git
-    New-TemporaryDirectory | set-location
-    git clone git@github.com/blemli/voliere.git
-    cd voliere
-}
 
 Function Uninstall-Helpers{
     choco uninstall git

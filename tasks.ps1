@@ -2,7 +2,6 @@
 
 $Tasks = [ordered]@{
     "Computer umbenennen"={Rename-Computer -NewName $computername}
-    "Unterstützungsprogramme installieren"={Install-Helpers};
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
     "OneDrive Deinstallieren"={UninstallOneDrive};
