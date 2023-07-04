@@ -1,8 +1,8 @@
 . .\functions.ps1
 $global:computername="gugus"
 
-$Tasks = @{
-    "Computer umbenennen"={Rename-Computer -ComputerName $global:computername}
+$Tasks = [ordered]@{
+    "Computer umbenennen"={Rename-Computer -NewName $computername.text -Whatif}
     "Unterstützungsprogramme installieren"={Install-Helpers};
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
@@ -34,7 +34,3 @@ $Tasks = @{
 
 #Write-Host $Tasks
 
-$Tasks.GetEnumerator() | ForEach-Object {
-    Write-Host $_.Key
-    Invoke-Command $_.Value
-}
