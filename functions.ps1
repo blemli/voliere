@@ -57,7 +57,7 @@ Function Uninstall-Bloat {
 }
 Function Install-Office {
     #choco install office365business
-    .\assets\office\setup.exe /configure .\assets\office\configuration.xml
+    .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml
 }
 Function Install-GoogleChrome {
     choco install googlechrome
@@ -300,7 +300,8 @@ Function uninstall-Chocolatey {
     $userKey.Close()
 }
 Function Add-SurferUser {
-    New-LocalUser -Name surfer -NoPassword -AccountNeverExpires -Description "Generic Account for Internet Café" -UserMayNotChangePassword -FullName "Surfer"
+    Disable-PrivacyExperience
+    New-LocalUser -Name surfer -NoPassword -AccountNeverExpires -Description "Generic Account for Internet Café" -UserMayNotChangePassword -FullName "Surfer" |  Set-LocalUser -PasswordNeverExpires:$true
 }
 
 Function Enable-Autologin {
@@ -308,9 +309,21 @@ Function Enable-Autologin {
     Set-ItemProperty -Path $RegistryPath 'AutoAdminLogon' -Value "1" -Type String 
     Set-ItemProperty -Path $RegistryPath 'DefaultUsername' -Value "surfer" -type String 
     Set-ItemProperty -Path $RegistryPath 'DefaultPassword' -Value "" -type String
+    Remove-ItemProperty -Path $RegistryPath -Name AutoLogonSID -Force
 }
 
 Function Set-DefaultPDFReader{
     $RegistryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice'
     New-ItemProperty -Path $RegistryPath -Name Progid -Value "Applications\Acrobat.exe" -Type String -Force
+}
+
+
+Function Disable-PrivacyExperience{
+    $RegistryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OOBE"
+    New-ItemProperty -Path $RegistryPath -Name DisablePrivacyExperience -Value 1 -Type DWORD -Force
+}
+
+Function Disable-MsEdge{
+    DisableEdgeShortcutCreation
+    #todo: edgeredirect
 }
