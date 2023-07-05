@@ -10,6 +10,7 @@ $Tasks = [ordered]@{
     "XPS entfernen"={UninstallXPSPrinter};
     "WiFi deaktivieren"={Disable-Wireless};
     "Bluetooth deaktivieren"={Disable-Bluetooth};
+    "Drucker installieren"={Add-Printer -ConnectionName "\\druckerserver\toshiba"};
     "Druckerinstallation verbieten"={Disable-PrinterInstallation};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Lockscreen deaktivieren"={DisableLockscreen};

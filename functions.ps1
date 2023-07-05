@@ -7,11 +7,7 @@ Function Uninstall-Helpers{
     uninstall-Chocolatey
 }
 
-Function Install-Chocolatey {
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    choco feature enable -n=allowGlobalConfirmation
-}
+
 Function Install-VLC {
     choco install vlc
     new-item -ItemType Directory -Path $env:appdata\vlc
@@ -74,13 +70,13 @@ Function Set-Homepage {
 }
 
 Function Disable-Wireless {
-    Get-NetAdapter | Where-Object { $_.Name -like "*WiFi*" } | Disable-NetAdapter -confirm:$false #todo: correct name?
+    #Get-NetAdapter | Where-Object { $_.Name -like "*WiFi*" } | Disable-NetAdapter -confirm:$false #todo: correct name?
+    Get-NetAdapter WLAN | Disable-NetAdapter -confirm:$false
+
 }
 
 Function Disable-Bluetooth {
-    Function Disable-Wireless {
-        Get-NetAdapter | Where-Object { $_.Name -like "*Bluetooth*" } | Disable-NetAdapter -confirm:$false #todo: correct name?
-    }
+    Get-PnpDevice | where {$_.Name -like "*Bluetooth*"} | Disable-PnpDevice -confirm:$false
 }
 
 Function Install-Papercut {

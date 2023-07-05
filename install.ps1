@@ -3,9 +3,10 @@
 Function Install-Chocolatey {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    choco feature enable -n=allowGlobalConfirmation
+    RefreshEnv.cmd
     Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
     RefreshEnv.cmd
+    choco feature enable -n=allowGlobalConfirmation
 }
 function New-TemporaryDirectory {
     $parent = [System.IO.Path]::GetTempPath()
