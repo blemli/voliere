@@ -14,6 +14,13 @@ function New-TemporaryDirectory {
     New-Item -ItemType Directory -Path (Join-Path $parent $name)
 }
 
+$ExecutionPolicy = Get-ExecutionPolicy -Scope Process
+if($ExecutionPolicy -eq "RemoteSigned" -or $ExecutionPolicy -eq "Unrestricted" -or $ExecutionPolicy -eq "Bypass") {
+    Write-Host "ScriptExecution is already allowed ($ExecutionPolicy)"
+} else {
+    Write-Host "ExecutionPolicy is $ExecutionPolicy, changing to RemoteSigned"
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+}
 
 Install-Chocolatey
 choco install git
