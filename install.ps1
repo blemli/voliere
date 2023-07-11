@@ -17,6 +17,7 @@ function New-TemporaryDirectory {
 
 Install-Chocolatey
 choco install git
+refreshenv
 New-TemporaryDirectory | set-location
 git clone https://github.com/blemli/voliere
 cd voliere

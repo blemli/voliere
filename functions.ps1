@@ -57,6 +57,7 @@ Function Install-Office {
 }
 Function Install-GoogleChrome {
     choco install googlechrome
+    New-Item -Path "HKLM:\SOFTWARE\Policies\Google\Chrome"
 }
 Function Set-Homepage {
     if ([Environment]::Is64BitOperatingSystem) {
@@ -92,9 +93,7 @@ Function Install-DeepFreeze {
     #todo: activate license
 }
 
-Function Disable-PrinterInstallation {
 
-}
 Function Disable-Edge{
     DisableEdgeShortcutCreation
     choco install msedgeredirect
@@ -316,10 +315,51 @@ Function Set-DefaultPDFReader{
 
 Function Disable-PrivacyExperience{
     $RegistryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OOBE"
+    New-Item $RegistryPath
     New-ItemProperty -Path $RegistryPath -Name DisablePrivacyExperience -Value 1 -Type DWORD -Force
 }
 
 Function Disable-MsEdge{
     DisableEdgeShortcutCreation
     #todo: edgeredirect
+}
+
+Function Disable-Feed{
+    $RegistryPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
+    New-Item $RegistryPath
+    New-ItemProperty -Path $RegistryPath -Name "EnableFeeds " -Value 0 -Type DWORD -Force
+}
+
+Function Install-7zip{
+    choco install 7zip
+}
+Function Install-OpenShell{
+    choco install OpenShell
+    New-Item "HKLM:\SOFTWARE\OpenShell\StartMenu\" -Force
+    New-Item "HKLM:\SOFTWARE\OpenShell\StartMenu\Settings" -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\OpenShell\StartMenu\Settings" -Name SkinW7 -Value "Windows Aero"
+}
+
+Function Disable-SearchBox{
+    $RegPath="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
+    New-ItemProperty -Path $RegPath -Name "SearchboxTaskbarMode" -Value 0 -Type DWORD -Force
+}
+
+Function Disable-Taskview{
+    $RegPath="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    New-ItemProperty -Path $RegPath -Name "ShowTaskViewButton" -Value 0 -Type DWORD -Force
+}
+
+Function Set-DefaultPrinter{
+    [CmdletBinding()]
+    param (
+ 
+    # Printer Name
+    [Parameter(Mandatory=$true)]
+    [String]
+    $PrinterName
+    )
+
+    $Printer = Get-CimInstance -Class Win32_Printer -Filter "Name='$PrinterName'"
+    Invoke-CimMethod -InputObject $Printer -MethodName SetDefaultPrinter 
 }
