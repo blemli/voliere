@@ -325,7 +325,7 @@ Function Disable-MsEdge{
 }
 
 Function Disable-Feed{
-    $RegistryPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
+    $RegistryPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
     New-Item $RegistryPath
     New-ItemProperty -Path $RegistryPath -Name "EnableFeeds " -Value 0 -Type DWORD -Force
 }
