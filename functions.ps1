@@ -363,3 +363,9 @@ Function Set-DefaultPrinter{
     $Printer = Get-CimInstance -Class Win32_Printer -Filter "Name='$PrinterName'"
     Invoke-CimMethod -InputObject $Printer -MethodName SetDefaultPrinter 
 }
+
+Function Enable-ShutdownOnPowerbutton{
+    $RegPath="HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\7648EFA3-DD9C-4E3E-B566-50F929386280"
+    New-ItemProperty -Path $RegPath -Name "ACSettingIndex" -Value 3 -Type DWORD -Force
+    New-ItemProperty -Path $RegPath -Name "DCSettingIndex" -Value 3 -Type DWORD -Force
+}
