@@ -3,7 +3,7 @@
 
 $global:Computername = Read-Host -Prompt "Computername: "
 #$DeepFreezeKey = Read-Host -Prompt "DeepFreeze Key: "
-$global:DeepFreezePassword = Read-Host "DeepFreeze Password" -AsSecureString
+$global:DeepFreezePassword = Read-Host "DeepFreeze Password"
 
 
 . .\functions.ps1
