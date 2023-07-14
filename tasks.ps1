@@ -22,6 +22,7 @@ $Tasks = [ordered]@{
     "Taskview entfernen"={Disable-Taskview};
     #"Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper.jpg" -Style Fill};
     "News deaktivieren"={Disable-Feed};
+    "Shutdown on Powerbutton"={Enable-ShutdownOnPowerbutton};
     "VLC installieren"={Install-VLC};
     "Google Chrome installieren"={Install-GoogleChrome};
     "Google Chrome als Standard"={Set-DefaultBrowser};
