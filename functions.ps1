@@ -334,7 +334,7 @@ Function Install-7zip{
     choco install 7zip
 }
 Function Install-OpenShell{
-    choco install OpenShell
+    choco install open-shell
     New-Item "HKLM:\SOFTWARE\OpenShell\StartMenu\" -Force
     New-Item "HKLM:\SOFTWARE\OpenShell\StartMenu\Settings" -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\OpenShell\StartMenu\Settings" -Name SkinW7 -Value "Windows Aero"
