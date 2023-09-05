@@ -294,15 +294,17 @@ Function uninstall-Chocolatey {
     $machineKey.Close()
     $userKey.Close()
 }
-Function Add-SurferUser {
+Function Add-NoLoginUser {
     Disable-PrivacyExperience
-    New-LocalUser -Name surfer -NoPassword -AccountNeverExpires -Description "Generic Account for Internet Café" -UserMayNotChangePassword -FullName "Surfer" |  Set-LocalUser -PasswordNeverExpires:$true
+    New-LocalUser -Name $global:username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$global:username" |  Set-LocalUser -PasswordNeverExpires:$true
 }
+
+
 
 Function Enable-Autologin {
     $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
     Set-ItemProperty -Path $RegistryPath 'AutoAdminLogon' -Value "1" -Type String 
-    Set-ItemProperty -Path $RegistryPath 'DefaultUsername' -Value "surfer" -type String 
+    Set-ItemProperty -Path $RegistryPath 'DefaultUsername' -Value "$global:username" -type String 
     Set-ItemProperty -Path $RegistryPath 'DefaultPassword' -Value "" -type String
     Remove-ItemProperty -Path $RegistryPath -Name AutoLogonSID -Force
 }
@@ -368,4 +370,16 @@ Function Enable-ShutdownOnPowerbutton{
     $RegPath="HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\7648EFA3-DD9C-4E3E-B566-50F929386280"
     New-ItemProperty -Path $RegPath -Name "ACSettingIndex" -Value 3 -Type DWORD -Force
     New-ItemProperty -Path $RegPath -Name "DCSettingIndex" -Value 3 -Type DWORD -Force
+}
+
+Function Move-TaskbarLeft{
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 0 -Force
+}
+
+Function Move-TaskbarCenter{
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 1 -Force
+}
+
+Function Move-TaskbarRight{
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 2 -Force
 }
