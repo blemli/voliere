@@ -12,6 +12,7 @@ Function Install-VLC {
     choco install vlc
     new-item -ItemType Directory -Path $env:appdata\vlc
     Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force
+    remove-item -path "C:\Users\Public\Desktop\VLC media player.lnk"
 }
 function New-TemporaryDirectory {
     $parent = [System.IO.Path]::GetTempPath()
@@ -47,16 +48,27 @@ Function Disable-ChromePasswordManager{
     New-ItemProperty -Path $RegPath -Name PasswordManagerEnabled -Value 0 -PropertyType DWord -Force
 }
 
+Function Uninstall-Program($Program){
+    (Get-WmiObject -Class Win32_Product | Where-Object {$_.Name -eq "$Program"}).uninstall()
+}
+
 Function Uninstall-Bloat {
     Get-AppxPackage -AllUsers "Microsoft.SkypeApp" | Remove-AppxPackage -AllUsers
     Get-AppxPackage "MicrosoftTeams" -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *Xbox* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *Spotify* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *Solitaire* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *Dropbox* -AllUsers | Remove-AppxPackage -AllUsers
+    Uninstall-Program "ExpressVPN"
+    Uninstall-Program "Acer Jumpstart"
 }
 Function Install-Office {
     #choco install office365business
     .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml
 }
 Function Install-GoogleChrome {
-    choco install googlechrome
+    choco install googlechrome --ignore-checksums
+    New-Item -Path "HKLM:\SOFTWARE\Policies\Google"
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google\Chrome"
 }
 Function Set-Homepage {
@@ -96,6 +108,7 @@ Function Install-DeepFreeze {
 
 Function Disable-Edge{
     DisableEdgeShortcutCreation
+    remove-item -path "C:\Users\Public\Desktop\Microsoft Edge.lnk"
     choco install msedgeredirect
 }
 
@@ -382,4 +395,40 @@ Function Move-TaskbarCenter{
 
 Function Move-TaskbarRight{
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 2 -Force
+}
+
+Function Remove-BloatPrinters{
+    $Printers=get-printer
+    foreach ($Printer in $Printers) {
+        if ($Printer.Name -ne "Microsoft Print to PDF") {
+            Remove-Printer $Printer
+        }
+    }
+}
+
+
+Function Set-ChromeDefaultBrowser{
+    try
+{
+    Write-Host "Starting script execution..."
+    $namespaceName = "root\cimv2\mdm\dmmap"
+    $className = "MDM_Policy_Config01_ApplicationDefaults02"
+    $obj=Get-CimInstance -Namespace $namespaceName -ClassName $className -Filter "ParentID='./Vendor/MSFT/Policy/Config' and InstanceID='ApplicationDefaults'"
+    if($obj)
+    {
+        $obj.DefaultAssociationsConfiguration = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxEZWZhdWx0QXNzb2NpYXRpb25zPg0KICA8QXNzb2NpYXRpb24gSWRlbnRpZmllcj0iLmh0bSIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSIuaHRtbCIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSJodHRwIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCiAgPEFzc29jaWF0aW9uIElkZW50aWZpZXI9Imh0dHBzIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCjwvRGVmYXVsdEFzc29jaWF0aW9ucz4='
+        Set-CimInstance -CimInstance $obj
+    }
+    else
+    {
+        $obj = New-CimInstance -Namespace $namespaceName -ClassName $className -Property @{ParentID="./Vendor/MSFT/Policy/Config";InstanceID="ApplicationDefaults";DefaultAssociationsConfiguration="PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxEZWZhdWx0QXNzb2NpYXRpb25zPg0KICA8QXNzb2NpYXRpb24gSWRlbnRpZmllcj0iLmh0bSIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSIuaHRtbCIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSJodHRwIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCiAgPEFzc29jaWF0aW9uIElkZW50aWZpZXI9Imh0dHBzIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCjwvRGVmYXVsdEFzc29jaWF0aW9ucz4="}
+    }
+    
+}
+catch
+{
+    $_.Exception.Message
+}
+
+Write-Host "Script execution completed."
 }
