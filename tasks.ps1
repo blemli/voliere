@@ -39,7 +39,7 @@ $Tasks ={"Vogelsang-Internet" =[ordered]@{
     "Papercut installieren"={Install-Papercut};
     "DeepFreeze installieren"={Install-DeepFreeze};
     "Helper deinstallieren"={Uninstall-Helpers};
-};
+}
 
 "Vogelsang-Schreiben" =[ordered]@{
     #"Computer umbenennen"={Rename-Computer -NewName $global:ComputerName}
@@ -54,7 +54,7 @@ $Tasks ={"Vogelsang-Internet" =[ordered]@{
     #"Bluetooth deaktivieren"={Disable-Bluetooth};
     "Drucker installieren"={Add-Printer -ConnectionName "192.168.0.220" -Name "Toshiba"};
     "Standarddrucker setzen"={Set-DefaultPrinter -PrinterName "Toshiba"};
-    "Druckerinstallation verbieten"={Disable-PrinterInstallation};
+    #"Druckerinstallation verbieten"={Disable-PrinterInstallation};
     #"Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Lockscreen deaktivieren"={DisableLockscreen};
     "Cortana abschalten"={DisableCortana};
@@ -82,5 +82,5 @@ $Tasks ={"Vogelsang-Internet" =[ordered]@{
     "Papercut installieren"={Install-Papercut};
     "DeepFreeze installieren"={Install-DeepFreeze};
     "Helper deinstallieren"={Uninstall-Helpers};
-};
+}
 }
