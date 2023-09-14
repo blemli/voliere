@@ -1,6 +1,6 @@
 . .\functions.ps1
 
-$Tasks ={"Vogelsang-Internet"=[ordered]@{
+$Tasks =@{"Vogelsang-Internet"=[ordered]@{
     "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName}
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
