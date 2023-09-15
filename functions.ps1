@@ -449,3 +449,10 @@ Function Install-DotNet{
 Function Install-Everything{
     choco install everything
 }
+
+Function Get-Cleartext($SecureString){
+$bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
+$value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) # free up the unmanged memory afterwards (thank to dimizuno)
+return $value
+}
