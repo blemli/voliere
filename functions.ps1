@@ -104,7 +104,7 @@ Function Disable-Bluetooth {
 
 Function Install-DeepFreeze {
     #todo copy exe
-    .\assets\DeepFreeze\DFStd.exe /Install /Thawed /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot
+    .\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
     #todo: activate license
 }
 
