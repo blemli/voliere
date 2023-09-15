@@ -93,10 +93,3 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     
 }
 }
-
-
-# an array of user specific functions
-$Userspecific=
-[
-    Disable-Cortana
-]
