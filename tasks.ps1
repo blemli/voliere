@@ -22,7 +22,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Keine Websuche im Startmenü"={DisableWebSearch};
     "Surfer erstellen"={Add-UnsecureUser $global:username};
     "Autologin aktivieren"={Enable-Autologin};
-    "Remove and Block Edge"={Disable-MSEdge};
+    "Remove and Block Edge"={Disable-Edge};
     "Searchbox entfernen"={Disable-SearchBox};
     "Taskview entfernen"={Disable-Taskview};
     #"Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper.jpg" -Style Fill};
