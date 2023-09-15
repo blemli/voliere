@@ -91,11 +91,11 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "OneDrive Deinstallieren"={UninstallOneDrive};
     "7zip installieren"={Install-7zip};
     "Everything installieren"={Install-Everything};
-    "ClassicShell (OpenShell) installieren"={Install-OpenShell};
-    "DeepFreeze installieren"={Install-DeepFreeze};
+    #"ClassicShell (OpenShell) installieren"={Install-OpenShell};
+    #"DeepFreeze installieren"={Install-DeepFreeze};
     "Startmenü aufräumen"={Import-StartLayout -LayoutPath .\assets\StartLayout\vogelsang.xml -MountPath "$env:Systemdrive"};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
-    "Helper deinstallieren"={Uninstall-Helpers};
+    #"Helper deinstallieren"={Uninstall-Helpers};
 }
 "Vogelsang-Schreiben-User"=[ordered]@{
     "Dateiendungen einblenden"={ShowKnownExtensions};
