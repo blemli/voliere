@@ -19,7 +19,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Lockscreen deaktivieren"={DisableLockscreen};
     "Cortana abschalten"={DisableCortana};
-    "Surfer erstellen"={Add-NoLoginUser};
+    "Surfer erstellen"={Add-UnsecureUser $global:username};
     "Autologin aktivieren"={Enable-Autologin};
     "Remove and Block Edge"={Disable-MSEdge};
     "Searchbox entfernen"={Disable-SearchBox};
@@ -90,4 +90,9 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Helper deinstallieren"={Uninstall-Helpers};
 }
+"Vogelsang-Schreiben-User"=[ordered]@{
+    "Dateiendungen einblenden"={ShowKnownExtensions};
+
+}
+
 }
