@@ -483,11 +483,13 @@ function Restart-Explorer{
 }
 
 function Disable-TrayOverflow{
+    New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
     $Path="HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 0 -Force
 }
 
 function Enable-TrayOverflow{
+    New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
     $Path="HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 1 -Force
 }
