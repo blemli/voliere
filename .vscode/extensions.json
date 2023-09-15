@@ -13,6 +13,7 @@
         "vscode-icons-team.vscode-icons",
         "ironmansoftware.powershellprotools",
         "ahgood.shift-shift",
-        "streetsidesoftware.code-spell-checker-german"
+        "streetsidesoftware.code-spell-checker-german",
+        "insigne.powershell"
     ]
 }

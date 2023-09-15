@@ -1,17 +1,13 @@
 #requires -RunAsAdministrator
 
-
-
-$Template = Read-Host -Prompt "Template: "
-$global:Computername = Read-Host -Prompt "Computername: "
-#$DeepFreezeKey = Read-Host -Prompt "DeepFreeze Key: "
+$Template = Read-Host -Prompt "Template"
+$global:Computername = Read-Host -Prompt "Computername"
 $global:DeepFreezePassword = Read-Host "DeepFreeze Password"
-$global:username = Read-Host -Prompt "Username: "
+$global:username = Read-Host -Prompt "Username"
 
 
 . .\functions.ps1
 . .\tasks.ps1
-
 
 
 $Tasks[$Template].GetEnumerator() | ForEach-Object {

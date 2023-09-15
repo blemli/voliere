@@ -310,6 +310,8 @@ Function uninstall-Chocolatey {
 Function Add-NoLoginUser {
     Disable-PrivacyExperience
     New-LocalUser -Name $global:username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$global:username" |  Set-LocalUser -PasswordNeverExpires:$true
+    $UserDir= Join-Path $env:Systemdrive "Users"
+    $UserDir= Join-Path $UserDir $global:username
 }
 
 
@@ -386,15 +388,15 @@ Function Enable-ShutdownOnPowerbutton{
 }
 
 Function Move-TaskbarLeft{
-    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 0 -Force
+    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 0 -Force
 }
 
 Function Move-TaskbarCenter{
-    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 1 -Force
+    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 1 -Force
 }
 
 Function Move-TaskbarRight{
-    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 2 -Force
+    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 2 -Force
 }
 
 Function Remove-BloatPrinters{
@@ -431,4 +433,19 @@ catch
 }
 
 Write-Host "Script execution completed."
+}
+
+
+Function Disable-Lockscreen{
+    $Path="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
+    New-Item -Path $Path
+    New-ItemProperty -Path $Path -Name "NoLockScreen" -Type dword -value 1
+}
+
+Function Install-DotNet{
+    Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3"
+}
+
+Function Install-Everything{
+    choco install everything
 }
