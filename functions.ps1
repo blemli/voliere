@@ -1,10 +1,13 @@
 Import-Module -Name "./Win10-Initial-Setup-Script/Win10.psm1"
+Import-Module -Name "./Win10-Initial-Setup-Script/Win11.psm1"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
 
+#todo: remove globals
 
 Function Uninstall-Helpers{
     choco uninstall git
     uninstall-Chocolatey
+    #Todo: also remove tempdir
 }
 
 
@@ -53,12 +56,14 @@ Function Uninstall-Program($Program){
 }
 
 Function Uninstall-Bloat {
+    # UninstallMsftBloat #todo: leave paint and calculator
     Get-AppxPackage -AllUsers "Microsoft.SkypeApp" | Remove-AppxPackage -AllUsers
     Get-AppxPackage "MicrosoftTeams" -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Xbox* -AllUsers | Remove-AppxPackage -AllUsers #todo: cannot remove...
     Get-AppxPackage *Spotify* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Solitaire* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Dropbox* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *News* -AllUsers | Remove-AppxPackage -AllUsers
     Uninstall-Program "ExpressVPN"
     Uninstall-Program "Acer Jumpstart"
 }
@@ -70,6 +75,9 @@ Function Install-GoogleChrome {
     choco install googlechrome --ignore-checksums
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google"
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google\Chrome"
+    Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk")
+    #Todo: remove whats new
+    #todo: remind to activate plugins
 }
 Function Set-Homepage {
     if ([Environment]::Is64BitOperatingSystem) {
@@ -92,12 +100,7 @@ Function Disable-Bluetooth {
     Get-PnpDevice | where {$_.Name -like "*Bluetooth*"} | Disable-PnpDevice -confirm:$false
 }
 
-Function Install-Papercut {
-    #msiexec /i pc-client-admin-deploy.msi /qn /norestart ALLUSERS=1
-    #https://www.papercut.com/kb/Main/MSISilentInstallExample/
-    #todo: install
 
-}
 
 Function Install-DeepFreeze {
     #todo copy exe
@@ -110,6 +113,7 @@ Function Disable-Edge{
     DisableEdgeShortcutCreation
     remove-item -path "C:\Users\Public\Desktop\Microsoft Edge.lnk"
     choco install msedgeredirect
+    #todo: unpin edge from taskbar
 }
 
 Function Set-WallPaper {
@@ -328,6 +332,7 @@ Function Enable-Autologin {
 }
 
 Function Set-DefaultPDFReader{
+    #Todo: doesn't work
     $RegistryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice'
     New-ItemProperty -Path $RegistryPath -Name Progid -Value "Applications\Acrobat.exe" -Type String -Force
 }
@@ -339,10 +344,7 @@ Function Disable-PrivacyExperience{
     New-ItemProperty -Path $RegistryPath -Name DisablePrivacyExperience -Value 1 -Type DWORD -Force
 }
 
-Function Disable-MsEdge{
-    DisableEdgeShortcutCreation
-    #todo: edgeredirect
-}
+
 
 Function Disable-Feed{
     $RegistryPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
@@ -488,4 +490,35 @@ function Disable-TrayOverflow{
 function Enable-TrayOverflow{
     $Path="HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 1 -Force
+}
+
+function Disable-Conexant{
+    Stop-Service CxAudMsg
+    Set-Service CxAudMsg -StartupType Disabled
+    Stop-Service CxMonSvc
+    Set-Service CxMonSvc -StartupType Disabled
+    Stop-Service CxUtilSvc
+    Set-Service CxUtilSvc -StartupType Disabled
+}
+
+function Remove-ChatIcon{
+    $RegPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Chat"
+    New-Item $RegPath
+    set-itemproperty -path $regpath -name ChatIcon -value 3 -type dword
+}
+
+function Install-Acrobat{
+    choco install adobereader -params '"/UpdateMode 0"'
+    Remove-Item -Path (Join-Path "$env:public" "Desktop/Adobe Acrobat.lnk")
+}
+
+function Disable-KeyboardLayout($layout="fr-CH"){
+    $list=Get-WinUserLanguageList
+    $list.RemoveAll({$args[0].LanguageTag -clike 'fr-CH'})
+    set-WinUSerLanguageList  $list -Force
+}
+
+function Disable-Sleep(){
+    Powercfg /Change standby-timeout-dc 0
+    Powercfg /Change monitor-timeout-dc 0
 }

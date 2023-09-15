@@ -1,7 +1,10 @@
 #requires -RunAsAdministrator
 
 Function Install-Chocolatey {
-    Remove-Item C:\ProgramData\chocolatey -Force -Recurse
+    $ChocoPath="C:\ProgramData\chocolatey"
+    if(Test-Path $ChocoPath){
+        Remove-Item $ChocoPath -Force -Recurse
+    }
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     RefreshEnv.cmd
