@@ -7,8 +7,7 @@
 
 $Template = Read-Host -Prompt "Template"
 $global:Computername = Read-Host -Prompt "Computername"
-$encryptedPW=Read-Host -AsSecureString -Prompt "DeepFreeze Password" 
-$global:DeepFreezePassword = get-cleartext($encryptedPW)
+$global:DeepFreezePassword = Read-PasswordAsCleartext("DeepFreeze Password")
 $global:username = Read-Host -Prompt "Username"
 
 
