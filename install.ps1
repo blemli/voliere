@@ -1,6 +1,7 @@
 #requires -RunAsAdministrator
 
 Function Install-Chocolatey {
+    Remove-Item C:\ProgramData\chocolatey -Force -Recurse
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     RefreshEnv.cmd
@@ -8,6 +9,7 @@ Function Install-Chocolatey {
     RefreshEnv.cmd
     choco feature enable -n=allowGlobalConfirmation
 }
+
 function New-TemporaryDirectory {
     $parent = [System.IO.Path]::GetTempPath()
     $name = [System.IO.Path]::GetRandomFileName()
