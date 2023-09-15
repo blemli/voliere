@@ -47,6 +47,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
 
 "Vogelsang-Schreiben"=[ordered]@{
     "Install-DotNet"={Install-DotNet};
+    "Allow Script Execution for Admin"={Set-ExecutionPolicy bypass -Scope CurrentUser};
     "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName};
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "Taskbar nach Links"={Move-TaskbarLeft};
@@ -62,7 +63,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     #"Druckerinstallation verbieten"={Disable-PrinterInstallation};
     "Lockscreen deaktivieren"={DisableLockscreen};
     "Cortana abschalten"={DisableCortana};
-    "Surfer erstellen"={Add-SurferUser};
+    "Benutzer erstellen"={Add-SurferUser};
     "Autologin aktivieren"={Enable-Autologin};
     "Lockscreen abstellen"={Disable-Lockscreen};
     "Remove and Block Edge"={Disable-MSEdge};
@@ -71,7 +72,6 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper\birds.jpg" -Style Fill};
     "News deaktivieren"={Disable-Feed};
     "Taskbar nach links verschieben"={Move-TaskbarLeft};
-    "Shutdown on Powerbutton"={Enable-ShutdownOnPowerbutton};
     "VLC installieren"={Install-VLC};
     "Google Chrome installieren"={Install-GoogleChrome};
     "Google Chrome als Standard"={Set-DefaultBrowser};
@@ -86,10 +86,8 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "7zip installieren"={Install-7zip};
     "Everything installieren"={Install-Everything};
     "ClassicShell (OpenShell) installieren"={Install-OpenShell};
-    "Papercut installieren"={Install-Papercut};
     "DeepFreeze installieren"={Install-DeepFreeze};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Helper deinstallieren"={Uninstall-Helpers};
-    
 }
 }

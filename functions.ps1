@@ -55,7 +55,7 @@ Function Uninstall-Program($Program){
 Function Uninstall-Bloat {
     Get-AppxPackage -AllUsers "Microsoft.SkypeApp" | Remove-AppxPackage -AllUsers
     Get-AppxPackage "MicrosoftTeams" -AllUsers | Remove-AppxPackage -AllUsers
-    Get-AppxPackage *Xbox* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *Xbox* -AllUsers | Remove-AppxPackage -AllUsers #todo: cannot remove...
     Get-AppxPackage *Spotify* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Solitaire* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Dropbox* -AllUsers | Remove-AppxPackage -AllUsers
@@ -312,16 +312,19 @@ Function Add-NoLoginUser {
     New-LocalUser -Name $global:username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$global:username" |  Set-LocalUser -PasswordNeverExpires:$true
     $UserDir= Join-Path $env:Systemdrive "Users"
     $UserDir= Join-Path $UserDir $global:username
+    new-Item -type Directory -path $userdir
 }
 
 
 
 Function Enable-Autologin {
     $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+    if(Test-Path (Join-Path $RegistryPath AutoLogonSID)){
+        Remove-ItemProperty -Path $RegistryPath -Name AutoLogonSID -Force
+    }
     Set-ItemProperty -Path $RegistryPath 'AutoAdminLogon' -Value "1" -Type String 
     Set-ItemProperty -Path $RegistryPath 'DefaultUsername' -Value "$global:username" -type String 
     Set-ItemProperty -Path $RegistryPath 'DefaultPassword' -Value "" -type String
-    Remove-ItemProperty -Path $RegistryPath -Name AutoLogonSID -Force
 }
 
 Function Set-DefaultPDFReader{
@@ -358,12 +361,12 @@ Function Install-OpenShell{
 }
 
 Function Disable-SearchBox{
-    $RegPath="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
+    $RegPath="HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
     New-ItemProperty -Path $RegPath -Name "SearchboxTaskbarMode" -Value 0 -Type DWORD -Force
 }
 
 Function Disable-Taskview{
-    $RegPath="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    $RegPath="HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     New-ItemProperty -Path $RegPath -Name "ShowTaskViewButton" -Value 0 -Type DWORD -Force
 }
 
@@ -439,7 +442,7 @@ Write-Host "Script execution completed."
 Function Disable-Lockscreen{
     $Path="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
     New-Item -Path $Path
-    New-ItemProperty -Path $Path -Name "NoLockScreen" -Type dword -value 1
+    New-ItemProperty -Path $Path -Name "NoLockScreen" -Type dword -value 1 -Force
 }
 
 Function Install-DotNet{
@@ -448,6 +451,8 @@ Function Install-DotNet{
 
 Function Install-Everything{
     choco install everything
+    #todo remove tray icon
+    #todo: remove desktop shortcut
 }
 
 Function Get-ClearText($SecureString){
@@ -457,7 +462,7 @@ $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
 return $value
 }
 
-Function Read-PasswordAsCleartext($prompt){
+Function Read-Password($prompt){
     $First="a"
     $Second="b"
     while($first -ne $second){
@@ -469,4 +474,18 @@ Function Read-PasswordAsCleartext($prompt){
     Write-Host "Passwords do not match"
     }
     return $first
+}
+
+function Restart-Explorer{
+    Stop-Process -Name Explorer
+}
+
+function Disable-TrayOverflow{
+    $Path="HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
+    New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 0 -Force
+}
+
+function Enable-TrayOverflow{
+    $Path="HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
+    New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 1 -Force
 }

@@ -10,6 +10,12 @@ Function Install-Chocolatey {
     choco feature enable -n=allowGlobalConfirmation
 }
 
+function Install-Sudo{
+    choco install gsudo
+    Write-Output "`nImport-Module 'gsudoModule'"| Add-Content $Profile
+    gsudo config CacheMode Auto
+}
+
 function New-TemporaryDirectory {
     $parent = [System.IO.Path]::GetTempPath()
     $name = [System.IO.Path]::GetRandomFileName()
@@ -25,6 +31,7 @@ if($ExecutionPolicy -eq "RemoteSigned" -or $ExecutionPolicy -eq "Unrestricted" -
 }
 
 Install-Chocolatey
+Install-Sudo
 choco install git
 refreshenv
 New-TemporaryDirectory | set-location
