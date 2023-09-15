@@ -71,7 +71,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Benutzer erstellen"={Add-UnsecureUser $global:username};
     "Autologin aktivieren"={Enable-Autologin};
     "Lockscreen abstellen"={Disable-Lockscreen};
-    "Remove and Block Edge"={Disable-MSEdge};
+    "Remove and Block Edge"={Disable-Edge};
     "Searchbox entfernen"={Disable-SearchBox};
     "Taskview entfernen"={Disable-Taskview};
     "Widgets entfernen"={DisableWidgets};
