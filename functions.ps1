@@ -483,12 +483,12 @@ function Restart-Explorer{
 }
 
 function Disable-TrayOverflow{
-    $Path="HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
+    $Path="HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 0 -Force
 }
 
 function Enable-TrayOverflow{
-    $Path="HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
+    $Path="HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 1 -Force
 }
 
