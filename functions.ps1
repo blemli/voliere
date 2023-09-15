@@ -457,12 +457,12 @@ $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
 return $value
 }
 
-Function Read-PasswordAsCleartext{
+Function Read-PasswordAsCleartext($prompt){
     $First="a"
     $Second="b"
     while($first -ne $second){
-    $First=Get-ClearText(Read-Host -Assecurestring -prompt "Password")
-    $Second=Get-ClearText(Read-Host -Assecurestring -prompt "Repeat Password")
+    $First=Get-ClearText(Read-Host -Assecurestring -prompt "$prompt")
+    $Second=Get-ClearText(Read-Host -Assecurestring -prompt "Repeat $prompt")
     if ($first -eq $second){
         break
     }
