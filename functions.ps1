@@ -450,9 +450,23 @@ Function Install-Everything{
     choco install everything
 }
 
-Function Get-Cleartext($SecureString){
+Function Get-ClearText($SecureString){
 $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
 $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
 [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) # free up the unmanged memory afterwards (thank to dimizuno)
 return $value
+}
+
+Function Read-PasswordAsCleartext{
+    $First="a"
+    $Second="b"
+    while($first -ne $second){
+    $First=Get-ClearText(Read-Host -Assecurestring -prompt "Password")
+    $Second=Get-ClearText(Read-Host -Assecurestring -prompt "Repeat Password")
+    if ($first -eq $second){
+        break
+    }
+    Write-Host "Passwords do not match"
+    }
+    return $first
 }
