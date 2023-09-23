@@ -64,6 +64,7 @@ Function Uninstall-Bloat {
     Get-AppxPackage *Solitaire* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Dropbox* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *News* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *ClipChamp* -AllUsers | Remove-AppxPackage -AllUsers
     Uninstall-Program "ExpressVPN"
     Uninstall-Program "Acer Jumpstart"
 }
@@ -78,6 +79,8 @@ Function Install-GoogleChrome {
     Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk")
     #Todo: remove whats new
     #todo: remind to activate plugins
+    #todo: set homepage
+    #todo: privacy
 }
 Function Set-Homepage {
     if ([Environment]::Is64BitOperatingSystem) {
@@ -453,8 +456,8 @@ Function Install-DotNet{
 
 Function Install-Everything{
     choco install everything
+    Remove-Item (join-path $env:public Desktop\Everything.lnk)
     #todo remove tray icon
-    #todo: remove desktop shortcut
 }
 
 Function Get-ClearText($SecureString){
