@@ -1,6 +1,7 @@
 Import-Module -Name "./Win10-Initial-Setup-Script/Win10.psm1"
 Import-Module -Name "./Win10-Initial-Setup-Script/Win11.psm1"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
+. .\ActiveSetup.ps1
 
 #todo: remove globals
 
@@ -524,3 +525,4 @@ function Disable-Sleep(){
     Powercfg /Change standby-timeout-dc 0
     Powercfg /Change monitor-timeout-dc 0
 }
+

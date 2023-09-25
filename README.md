@@ -13,5 +13,6 @@ Zahme Vögel singen von Freiheit, wilde Vögel fliegen
 | psbuild   | 
 
 ## Learned
-No need to be afraid of scriptblocks, they are cool.
-Test early test often
+- No need to be afraid of scriptblocks, they are cool.
+- Test early test often
+- [ActiveSetup](https://www.clearbyte.ch/active-setup/) is genious!
