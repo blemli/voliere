@@ -1,19 +1,14 @@
 
-enum ActiveSetupPosition{
-    None=""
-    First="<"
-    Last=">"
-}
 function Add-ActiveSetupComponent{
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$False)]
+        [Parameter()]
         [String]
         $DisplayName,
         [Parameter(Mandatory=$True)]
         [String]
         $Id,
-        [Parameter(Mandatory=$False)]
+        [Parameter()]
         [String]
         $Locale,
         [Parameter(Mandatory=$True)]
@@ -23,12 +18,20 @@ function Add-ActiveSetupComponent{
         [String]
         $Version,
         [Parameter()]
-        [ActiveSetupPosition]
-        $Position = [ActiveSetupPosition]::None
+        [String]
+        [ValidateSet($null,"First","Last")]
+        $Position = $null
     )
 
+    switch ($Position) {
+        $null  { $PositionChar="" }
+        "First" { $PositionChar="<" }
+        "Last"  { $PositionChar=">" }
+        Default {$PositionChar=""}
+    }
+
     $BasePath="HKLM:\Software\Microsoft\Active Setup\Installed Components"
-    $RegPath= Join-Path $BasePath ("$Position"+"$Id")
+    $RegPath= Join-Path $BasePath ("$PositionChar"+"$Id")
     New-Item -Path $RegPath
     
     New-ItemProperty -Path $RegPath -name "(default)" -value $DisplayName -Force
