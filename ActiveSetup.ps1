@@ -1,3 +1,9 @@
+
+enum ActiveSetupPosition{
+    None=""
+    First="<"
+    Last=">"
+}
 function Add-ActiveSetupComponent{
     [CmdletBinding()]
     param (
@@ -15,11 +21,14 @@ function Add-ActiveSetupComponent{
         $Script,
         [Parameter()]
         [String]
-        $Version
+        $Version,
+        [Parameter()]
+        [ActiveSetupPosition]
+        $Position = [ActiveSetupPosition]::None
     )
 
     $BasePath="HKLM:\Software\Microsoft\Active Setup\Installed Components"
-    $RegPath= Join-Path $BasePath $Id
+    $RegPath= Join-Path $BasePath ("$Position"+"$Id")
     New-Item -Path $RegPath
     
     New-ItemProperty -Path $RegPath -name "(default)" -value $DisplayName -Force
@@ -38,6 +47,7 @@ function Disable-ActiveSetupComponent{
         [String]
         $Id
     )
+    #todo: also try <$id and >$id
     $BasePath="HKLM:\Software\Microsoft\Active Setup\Installed Components"
     $RegPath= Join-Path $BasePath $Id
     New-ItemProperty -Path $RegPath -Name IsInstalled -value 0 -Force
@@ -49,6 +59,7 @@ function Enable-ActiveSetupComponent{
         [String]
         $Id
     )
+    #todo: also try <$id and >$id
     $BasePath="HKLM:\Software\Microsoft\Active Setup\Installed Components"
     $RegPath= Join-Path $BasePath $Id
     New-ItemProperty -Path $RegPath -Name IsInstalled -value 1 -Force
