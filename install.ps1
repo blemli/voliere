@@ -57,5 +57,5 @@ git clone https://github.com/blemli/voliere
 cd voliere
 Add-PSModulePath -Path (Get-Location)
 git submodule update --init --recursive
-Add-PSModulePath -Path (Join-Path Get-Location "Win10-Initial-Setup-Script")
+Add-PSModulePath -Path (Join-Path (Get-Location) "Win10-Initial-Setup-Script")
 .\Optimize-KioskComputer.ps1
