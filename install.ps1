@@ -37,7 +37,9 @@ Install-Chocolatey
 Install-Sudo
 choco install git
 refreshenv
-New-TemporaryDirectory | set-location
+$ProblemliPath=Join-Path $env:ProgramFiles "Problemli"
+New-Item -Type Directory -Path $ProblemliPath
+Set-Location $ProblemliPath
 git clone https://github.com/blemli/voliere
 cd voliere
 git submodule update --init --recursive
