@@ -560,6 +560,16 @@ function Disable-KeyboardLayout() {
     set-WinUSerLanguageList  $list -Force
 }
 
+Function Clear-KeyboardLayout(){
+    #todo: implement for all users
+    $Layouts=Get-WinUserLanguageList
+    #Remove all but first
+    $Layouts | Select-Object -Skip 1 | ForEach-Object {
+        $Layouts.Remove($_)
+    }
+    set-WinUSerLanguageList $Layouts -Force
+}
+
 function Disable-Sleep() {
     Powercfg /Change standby-timeout-dc 0
     Powercfg /Change monitor-timeout-dc 0
