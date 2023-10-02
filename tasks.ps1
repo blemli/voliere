@@ -45,7 +45,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
 }
 
 "Vogelsang-Schreiben"=[ordered]@{
-    "DotNet Installieren"={Install-DotNet};
+    #"DotNet Installieren"={Install-DotNet};
     "Administrator darf Scripts ausführen"={Set-ExecutionPolicy bypass -Scope CurrentUser};
     "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName};
     "Dateiendungen einblenden"={ShowKnownExtensions};
