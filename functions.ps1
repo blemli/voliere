@@ -326,7 +326,7 @@ Function Uninstall-Chocolatey {
 }
 Function Add-UnsecureUser($username) {
     Disable-PrivacyExperience
-    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" |  Set-LocalUser -name $username -PasswordNeverExpires:$true
+    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" -Force |  Set-LocalUser -name $username -PasswordNeverExpires:$true
     $UserDir = Join-Path $env:Systemdrive "Users"
     $UserDir = Join-Path $UserDir $username
     new-Item -type Directory -path $userdir
@@ -423,7 +423,7 @@ Function Set-TaskbarAlignement {
     )
     $RegPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     New-ItemProperty -Path $RegPath -Name "TaskbarAl" -Value $Alignment -Force
-    Add-ActiveSetupComponent -Id TaskbarAlignement -Name "Align Taskbar" -Script "New-ItemProperty -Path $RegPath -Name 'TaskbarAl' -Value $Alignment -Force"
+    Add-ActiveSetupComponent -Id TaskbarAlignement -DisplayName "Align Taskbar" -Script "New-ItemProperty -Path $RegPath -Name 'TaskbarAl' -Value $Alignment -Force"
 }
 Function Move-TaskbarLeft {
     Set-TaskbarAlignement 0
