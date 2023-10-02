@@ -2,8 +2,6 @@
 
 
 
-
-
 $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName}
     "Dateiendungen einblenden"={ShowKnownExtensions};
@@ -18,8 +16,8 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Druckerinstallation verbieten"={Disable-PrinterInstallation};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Lockscreen deaktivieren"={DisableLockscreen};
-    "Cortana abschalten"={DisableCortana};
-    "Keine Websuche im Startmenü"={DisableWebSearch};
+    "Cortana abschalten"={Disable-Cortana};
+    "Keine Websuche im Startmenü"={Disable-WebSearch};
     "Surfer erstellen"={Add-UnsecureUser $global:username};
     "Autologin aktivieren"={Enable-Autologin};
     "Remove and Block Edge"={Disable-Edge};
@@ -55,6 +53,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Alle Infosymbole anzeigen"= {Disable-TrayOverflow};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
     "Bloatware löschen (Skype, Candycrush, etc.)"={Uninstall-Bloat};
+    "Store von Taskbar lösen"={Unpin-TaskbarApp -AppName "Microsoft Store"}
     "Fax entfernen"={RemoveFaxPrinter};
     "XPS entfernen"={UninstallXPSPrinter};
     "Admin Shares deaktivieren"={DisableAdminShares};
@@ -62,12 +61,12 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "WiFi deaktivieren"={Disable-Wireless};
     #"Bluetooth deaktivieren"={Disable-Bluetooth};
     #"Drucker installieren"={Add-Printer -ConnectionName "192.168.0.220" -Name "Toshiba"};
-    #"Standarddrucker setzen"={Set-DefaultPrinter -PrinterName "Toshiba"};
+    "Standarddrucker setzen"={Set-DefaultPrinter -PrinterName "Toshiba"};
     #"Druckerinstallation verbieten"={Disable-PrinterInstallation};
     "Lockscreen deaktivieren"={DisableLockscreen};
     "Nicht schlafen"={Disable-Sleep};
     "Französisches Layout entfernen"={Disable-KeyboardLayout};
-    "Cortana abschalten"={DisableCortana};
+    "Cortana abschalten"={Disable-Cortana};
     "Benutzer erstellen"={Add-UnsecureUser $global:username};
     "Autologin aktivieren"={Enable-Autologin};
     "Lockscreen abstellen"={Disable-Lockscreen};
@@ -92,19 +91,10 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "7zip installieren"={Install-7zip};
     "Everything installieren"={Install-Everything};
     #"ClassicShell (OpenShell) installieren"={Install-OpenShell};
-    #"DeepFreeze installieren"={Install-DeepFreeze};
-    "Startmenü aufräumen"={Import-StartLayout -LayoutPath .\assets\StartLayout\vogelsang.xml -MountPath "$env:Systemdrive"};
+    "DeepFreeze installieren"={Install-DeepFreeze};
+    #"Startmenü aufräumen"={Import-StartLayout -LayoutPath .\assets\StartLayout\vogelsang.xml -MountPath "$env:Systemdrive"};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
+    "Papierkorb leeren"={Clear-RecycleBin -Force}
     #"Helper deinstallieren"={Uninstall-Helpers};
-}
-"Vogelsang-Schreiben-User"=[ordered]@{
-    "Dateiendungen einblenden"={ShowKnownExtensions};
-    "Cortana abschalten"={DisableCortana};
-    "Searchbox entfernen"={Disable-SearchBox};
-    "Taskview entfernen"={Disable-Taskview};
-    "Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper\birds.jpg" -Style Fill};
-    "News deaktivieren"={Disable-Feed};
-    "Taskbar nach links verschieben"={Move-TaskbarLeft};
-    "Disable French layout"={Disable-KeyboardLayout};
 }
 }

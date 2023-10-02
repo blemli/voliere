@@ -1,10 +1,11 @@
 Import-Module -Name "./Win10-Initial-Setup-Script/Win10.psm1"
 Import-Module -Name "./Win10-Initial-Setup-Script/Win11.psm1"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
+. .\ActiveSetup.ps1
 
 #todo: remove globals
 
-Function Uninstall-Helpers{
+Function Uninstall-Helpers {
     choco uninstall git
     uninstall-Chocolatey
     #Todo: also remove tempdir
@@ -46,13 +47,13 @@ Function Install-UblockOrigin {
     # you need to enable it manually
 }
 
-Function Disable-ChromePasswordManager{
-    $RegPath= "HKLM:\SOFTWARE\Policies\Google\Chrome"
+Function Disable-ChromePasswordManager {
+    $RegPath = "HKLM:\SOFTWARE\Policies\Google\Chrome"
     New-ItemProperty -Path $RegPath -Name PasswordManagerEnabled -Value 0 -PropertyType DWord -Force
 }
 
-Function Uninstall-Program($Program){
-    (Get-WmiObject -Class Win32_Product | Where-Object {$_.Name -eq "$Program"}).uninstall()
+Function Uninstall-Program($Program) {
+    (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq "$Program" }).uninstall()
 }
 
 Function Uninstall-Bloat {
@@ -100,28 +101,37 @@ Function Disable-Wireless {
 }
 
 Function Disable-Bluetooth {
-    Get-PnpDevice | where {$_.Name -like "*Bluetooth*"} | Disable-PnpDevice -confirm:$false
+    Get-PnpDevice | where { $_.Name -like "*Bluetooth*" } | Disable-PnpDevice -confirm:$false
 }
 
+Function Unpin-TaskbarApp {
+    param(
+        [String]$AppName
+    )
+    ((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | ? { $_.Name -eq $appname }).Verbs() | ? { $_.Name.replace('&', '') -match 'Unpin from taskbar' } | % { $_.DoIt(); $exec =
+        $true }
+}
 
 
 Function Install-DeepFreeze {
-    #todo copy exe
+    #todo: create a choco or scoop package instead
     .\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
-    #todo: activate license
+    #todo: manually: add license
 }
 
 
-Function Disable-Edge{
+
+Function Disable-Edge {
     DisableEdgeShortcutCreation
     remove-item -path "C:\Users\Public\Desktop\Microsoft Edge.lnk"
     choco install msedgeredirect
-    #todo: unpin edge from taskbar
+    #todo: disable msedgeredirect update and tray
+    Unpin-TaskbarApp -AppName "Microsoft Edge"
 }
 
 Function Set-WallPaper {
  
-<#
+    <#
  
     .SYNOPSIS
     Applies a specified wallpaper to the current user's desktop
@@ -138,43 +148,43 @@ Function Set-WallPaper {
   
 #>
  
-param (
-    [parameter(Mandatory=$True)]
-    # Provide path to image
-    [string]$Image,
-    # Provide wallpaper style that you would like applied
-    [parameter(Mandatory=$False)]
-    [ValidateSet('Fill', 'Fit', 'Stretch', 'Tile', 'Center', 'Span')]
-    [string]$Style
-)
+    param (
+        [parameter(Mandatory = $True)]
+        # Provide path to image
+        [string]$Image,
+        # Provide wallpaper style that you would like applied
+        [parameter(Mandatory = $False)]
+        [ValidateSet('Fill', 'Fit', 'Stretch', 'Tile', 'Center', 'Span')]
+        [string]$Style
+    )
 
-$ImagePath=(get-item $Image).FullName
+    $ImagePath = (get-item $Image).FullName
  
-$WallpaperStyle = Switch ($Style) {
+    $WallpaperStyle = Switch ($Style) {
   
-    "Fill" {"10"}
-    "Fit" {"6"}
-    "Stretch" {"2"}
-    "Tile" {"0"}
-    "Center" {"0"}
-    "Span" {"22"}
+        "Fill" { "10" }
+        "Fit" { "6" }
+        "Stretch" { "2" }
+        "Tile" { "0" }
+        "Center" { "0" }
+        "Span" { "22" }
   
-}
+    }
  
-If($Style -eq "Tile") {
+    If ($Style -eq "Tile") {
  
-    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallpaperStyle -PropertyType String -Value $WallpaperStyle -Force
-    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name TileWallpaper -PropertyType String -Value 1 -Force
+        New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallpaperStyle -PropertyType String -Value $WallpaperStyle -Force
+        New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name TileWallpaper -PropertyType String -Value 1 -Force
  
-}
-Else {
+    }
+    Else {
  
-    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallpaperStyle -PropertyType String -Value $WallpaperStyle -Force
-    New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name TileWallpaper -PropertyType String -Value 0 -Force
+        New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallpaperStyle -PropertyType String -Value $WallpaperStyle -Force
+        New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name TileWallpaper -PropertyType String -Value 0 -Force
  
-}
+    }
  
-Add-Type -TypeDefinition @" 
+    Add-Type -TypeDefinition @" 
 using System; 
 using System.Runtime.InteropServices;
   
@@ -211,7 +221,7 @@ Function Disable-WindowsUpdate {
 
 Function Set-DefaultBrowser {
     #choco install setuserfta
-<#     $protocols=@(".htm",
+    <#     $protocols=@(".htm",
     ".html",
     ".pdf",
     "http",
@@ -222,7 +232,7 @@ Function Set-DefaultBrowser {
     #todo: Implement
 }
 
-Function uninstall-Chocolatey {
+Function Uninstall-Chocolatey {
     $VerbosePreference = 'Continue'
     if (-not $env:ChocolateyInstall) {
         $message = @(
@@ -317,8 +327,8 @@ Function uninstall-Chocolatey {
 Function Add-UnsecureUser($username) {
     Disable-PrivacyExperience
     New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" |  Set-LocalUser -name $username -PasswordNeverExpires:$true
-    $UserDir= Join-Path $env:Systemdrive "Users"
-    $UserDir= Join-Path $UserDir $username
+    $UserDir = Join-Path $env:Systemdrive "Users"
+    $UserDir = Join-Path $UserDir $username
     new-Item -type Directory -path $userdir
 }
 
@@ -326,7 +336,7 @@ Function Add-UnsecureUser($username) {
 
 Function Enable-Autologin {
     $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
-    if(Test-Path (Join-Path $RegistryPath AutoLogonSID)){
+    if (Test-Path (Join-Path $RegistryPath AutoLogonSID)) {
         Remove-ItemProperty -Path $RegistryPath -Name AutoLogonSID -Force
     }
     Set-ItemProperty -Path $RegistryPath 'AutoAdminLogon' -Value "1" -Type String 
@@ -334,14 +344,14 @@ Function Enable-Autologin {
     Set-ItemProperty -Path $RegistryPath 'DefaultPassword' -Value "" -type String
 }
 
-Function Set-DefaultPDFReader{
+Function Set-DefaultPDFReader {
     #Todo: doesn't work
     $RegistryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice'
     New-ItemProperty -Path $RegistryPath -Name Progid -Value "Applications\Acrobat.exe" -Type String -Force
 }
 
 
-Function Disable-PrivacyExperience{
+Function Disable-PrivacyExperience {
     $RegistryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OOBE"
     New-Item $RegistryPath
     New-ItemProperty -Path $RegistryPath -Name DisablePrivacyExperience -Value 1 -Type DWORD -Force
@@ -349,66 +359,86 @@ Function Disable-PrivacyExperience{
 
 
 
-Function Disable-Feed{
-    $RegistryPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
+Function Disable-Feed {
+    $RegistryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
     New-Item $RegistryPath
     New-ItemProperty -Path $RegistryPath -Name "EnableFeeds " -Value 0 -Type DWORD -Force
+    $RegistryPath = "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\NewsAndInterests"
+    New-ItemProperty -path $RegistryPath -name "AllowNewsAndInterests" -value 0 -type DWORD -Force
 }
 
-Function Install-7zip{
+Function Install-7zip {
     choco install 7zip
 }
-Function Install-OpenShell{
+
+Function Install-OpenShell {
     choco install open-shell
     New-Item "HKLM:\SOFTWARE\OpenShell\StartMenu\" -Force
     New-Item "HKLM:\SOFTWARE\OpenShell\StartMenu\Settings" -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\OpenShell\StartMenu\Settings" -Name SkinW7 -Value "Windows Aero"
 }
 
-Function Disable-SearchBox{
-    $RegPath="HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
+Function Disable-SearchBox {
+    $RegPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
     New-ItemProperty -Path $RegPath -Name "SearchboxTaskbarMode" -Value 0 -Type DWORD -Force
+    Add-ActiveSetupComponent -DisplayName "Disable Searchbox" -Id "DisableSearchbox" -Script "New-ItemProperty -Path $RegPath -Name 'SearchboxTaskbarMode' -Value 0 -Type DWORD -Force"
 }
 
-Function Disable-Taskview{
-    $RegPath="HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+Function Disable-WebSearch {
+    Disable-WebSearch
+    $Regpath = "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer"
+    New-ItemProperty -Path $Regpath -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1
+    Add-ActiveSetupComponent -id DisableWebSearch -DisplayName "Disable Web Search" -Script "New-ItemProperty -Path $Regpath -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1"
+}
+
+Function Disable-Taskview {
+    $RegPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     New-ItemProperty -Path $RegPath -Name "ShowTaskViewButton" -Value 0 -Type DWORD -Force
+    Add-ActiveSetupComponent -DisplayName "Taskview Ausblenden" -Id "DisableTaskview" -Version 1 -Script 'New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name "ShowTaskViewButton" -Value 0 -Type DWORD -Force'
 }
 
-Function Set-DefaultPrinter{
+Function Set-DefaultPrinter {
     [CmdletBinding()]
     param (
  
-    # Printer Name
-    [Parameter(Mandatory=$true)]
-    [String]
-    $PrinterName
+        # Printer Name
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PrinterName
     )
 
     $Printer = Get-CimInstance -Class Win32_Printer -Filter "Name='$PrinterName'"
     Invoke-CimMethod -InputObject $Printer -MethodName SetDefaultPrinter 
 }
 
-Function Enable-ShutdownOnPowerbutton{
-    $RegPath="HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\7648EFA3-DD9C-4E3E-B566-50F929386280"
+Function Enable-ShutdownOnPowerbutton {
+    $RegPath = "HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\7648EFA3-DD9C-4E3E-B566-50F929386280"
     New-ItemProperty -Path $RegPath -Name "ACSettingIndex" -Value 3 -Type DWORD -Force
     New-ItemProperty -Path $RegPath -Name "DCSettingIndex" -Value 3 -Type DWORD -Force
 }
 
-Function Move-TaskbarLeft{
-    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 0 -Force
+Function Set-TaskbarAlignement {
+    param(
+        [int]$Alignment
+    )
+    $RegPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    New-ItemProperty -Path $RegPath -Name "TaskbarAl" -Value $Alignment -Force
+    Add-ActiveSetupComponent -Id TaskbarAlignement -Name "Align Taskbar" -Script "New-ItemProperty -Path $RegPath -Name 'TaskbarAl' -Value $Alignment -Force"
+}
+Function Move-TaskbarLeft {
+    Set-TaskbarAlignement 0
 }
 
-Function Move-TaskbarCenter{
-    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 1 -Force
+Function Move-TaskbarCenter {
+    Set-TaskbarAlignement 1
 }
 
-Function Move-TaskbarRight{
-    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 2 -Force
+Function Move-TaskbarRight {
+    Set-TaskbarAlignement 2
 }
 
-Function Remove-BloatPrinters{
-    $Printers=get-printer
+Function Remove-BloatPrinters {
+    $Printers = get-printer
     foreach ($Printer in $Printers) {
         if ($Printer.Name -ne "Microsoft Print to PDF") {
             Remove-Printer $Printer
@@ -417,87 +447,83 @@ Function Remove-BloatPrinters{
 }
 
 
-Function Set-ChromeDefaultBrowser{
-    try
-{
-    Write-Host "Starting script execution..."
-    $namespaceName = "root\cimv2\mdm\dmmap"
-    $className = "MDM_Policy_Config01_ApplicationDefaults02"
-    $obj=Get-CimInstance -Namespace $namespaceName -ClassName $className -Filter "ParentID='./Vendor/MSFT/Policy/Config' and InstanceID='ApplicationDefaults'"
-    if($obj)
-    {
-        $obj.DefaultAssociationsConfiguration = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxEZWZhdWx0QXNzb2NpYXRpb25zPg0KICA8QXNzb2NpYXRpb24gSWRlbnRpZmllcj0iLmh0bSIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSIuaHRtbCIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSJodHRwIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCiAgPEFzc29jaWF0aW9uIElkZW50aWZpZXI9Imh0dHBzIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCjwvRGVmYXVsdEFzc29jaWF0aW9ucz4='
-        Set-CimInstance -CimInstance $obj
-    }
-    else
-    {
-        $obj = New-CimInstance -Namespace $namespaceName -ClassName $className -Property @{ParentID="./Vendor/MSFT/Policy/Config";InstanceID="ApplicationDefaults";DefaultAssociationsConfiguration="PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxEZWZhdWx0QXNzb2NpYXRpb25zPg0KICA8QXNzb2NpYXRpb24gSWRlbnRpZmllcj0iLmh0bSIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSIuaHRtbCIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSJodHRwIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCiAgPEFzc29jaWF0aW9uIElkZW50aWZpZXI9Imh0dHBzIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCjwvRGVmYXVsdEFzc29jaWF0aW9ucz4="}
-    }
+Function Set-ChromeDefaultBrowser {
+    try {
+        Write-Host "Starting script execution..."
+        $namespaceName = "root\cimv2\mdm\dmmap"
+        $className = "MDM_Policy_Config01_ApplicationDefaults02"
+        $obj = Get-CimInstance -Namespace $namespaceName -ClassName $className -Filter "ParentID='./Vendor/MSFT/Policy/Config' and InstanceID='ApplicationDefaults'"
+        if ($obj) {
+            $obj.DefaultAssociationsConfiguration = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxEZWZhdWx0QXNzb2NpYXRpb25zPg0KICA8QXNzb2NpYXRpb24gSWRlbnRpZmllcj0iLmh0bSIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSIuaHRtbCIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSJodHRwIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCiAgPEFzc29jaWF0aW9uIElkZW50aWZpZXI9Imh0dHBzIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCjwvRGVmYXVsdEFzc29jaWF0aW9ucz4='
+            Set-CimInstance -CimInstance $obj
+        }
+        else {
+            $obj = New-CimInstance -Namespace $namespaceName -ClassName $className -Property @{ParentID = "./Vendor/MSFT/Policy/Config"; InstanceID = "ApplicationDefaults"; DefaultAssociationsConfiguration = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxEZWZhdWx0QXNzb2NpYXRpb25zPg0KICA8QXNzb2NpYXRpb24gSWRlbnRpZmllcj0iLmh0bSIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSIuaHRtbCIgUHJvZ0lkPSJDaHJvbWVIVE1MIiBBcHBsaWNhdGlvbk5hbWU9Ikdvb2dsZSBDaHJvbWUiIC8+DQogIDxBc3NvY2lhdGlvbiBJZGVudGlmaWVyPSJodHRwIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCiAgPEFzc29jaWF0aW9uIElkZW50aWZpZXI9Imh0dHBzIiBQcm9nSWQ9IkNocm9tZUhUTUwiIEFwcGxpY2F0aW9uTmFtZT0iR29vZ2xlIENocm9tZSIgLz4NCjwvRGVmYXVsdEFzc29jaWF0aW9ucz4=" }
+        }
     
-}
-catch
-{
-    $_.Exception.Message
+    }
+    catch {
+        $_.Exception.Message
+    }
+
+    Write-Host "Script execution completed."
 }
 
-Write-Host "Script execution completed."
-}
 
-
-Function Disable-Lockscreen{
-    $Path="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
+Function Disable-Lockscreen {
+    $Path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
     New-Item -Path $Path
     New-ItemProperty -Path $Path -Name "NoLockScreen" -Type dword -value 1 -Force
 }
 
-Function Install-DotNet{
+Function Install-DotNet {
     Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3"
 }
 
-Function Install-Everything{
+Function Install-Everything {
     choco install everything
     Remove-Item (join-path $env:public Desktop\Everything.lnk)
     #todo remove tray icon
 }
 
-Function Get-ClearText($SecureString){
-$bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
-$value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) # free up the unmanged memory afterwards (thank to dimizuno)
-return $value
+Function Get-ClearText($SecureString) {
+    $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
+    $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) # free up the unmanged memory afterwards (thank to dimizuno)
+    return $value
 }
 
-Function Read-Password($prompt){
-    $First="a"
-    $Second="b"
-    while($first -ne $second){
-    $First=Get-ClearText(Read-Host -Assecurestring -prompt "$prompt")
-    $Second=Get-ClearText(Read-Host -Assecurestring -prompt "Repeat $prompt")
-    if ($first -eq $second){
-        break
-    }
-    Write-Host "Passwords do not match"
+Function Read-Password($prompt) {
+    $First = "a"
+    $Second = "b"
+    while ($first -ne $second) {
+        $First = Get-ClearText(Read-Host -Assecurestring -prompt "$prompt")
+        $Second = Get-ClearText(Read-Host -Assecurestring -prompt "Repeat $prompt")
+        if ($first -eq $second) {
+            break
+        }
+        Write-Host "Passwords do not match"
     }
     return $first
 }
 
-function Restart-Explorer{
+function Restart-Explorer {
     Stop-Process -Name Explorer
 }
 
-function Disable-TrayOverflow{
+function Disable-TrayOverflow {
     New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
-    $Path="HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
+    $Path = "HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 0 -Force
 }
 
-function Enable-TrayOverflow{
+function Enable-TrayOverflow {
     New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
-    $Path="HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
+    $Path = "HKCR:\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify"
     New-ItemProperty -Path $Path -Name "SystemTrayChevronVisibility" -Type dword -value 1 -Force
 }
 
-function Disable-Conexant{
+function Disable-Conexant {
     Stop-Service CxAudMsg
     Set-Service CxAudMsg -StartupType Disabled
     Stop-Service CxMonSvc
@@ -506,24 +532,44 @@ function Disable-Conexant{
     Set-Service CxUtilSvc -StartupType Disabled
 }
 
-function Remove-ChatIcon{
-    $RegPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Chat"
+function Remove-ChatIcon {
+    $RegPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Chat"
     New-Item $RegPath
     set-itemproperty -path $regpath -name ChatIcon -value 3 -type dword
 }
 
-function Install-Acrobat{
+function Install-Acrobat {
     choco install adobereader -params '"/UpdateMode 0"'
     Remove-Item -Path (Join-Path "$env:public" "Desktop/Adobe Acrobat.lnk")
 }
 
-function Disable-KeyboardLayout($layout="fr-CH"){
-    $list=Get-WinUserLanguageList
-    $list.RemoveAll({$args[0].LanguageTag -clike 'fr-CH'})
+function Disable-KeyboardLayout($layout = "fr-CH") {
+    $list = Get-WinUserLanguageList
+    $list.RemoveAll({ $args[0].LanguageTag -clike 'fr-CH' })
     set-WinUSerLanguageList  $list -Force
 }
 
-function Disable-Sleep(){
+function Disable-Sleep() {
     Powercfg /Change standby-timeout-dc 0
     Powercfg /Change monitor-timeout-dc 0
+}
+
+function Disable-WindowsHotkeys {
+    $RegPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    New-ItemProperty -Path $RegPath -Name "NoWinKeys" -Value 1 -PropertyType dword
+}
+
+function Enable-WindowsHotkeys {
+    $RegPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    New-ItemProperty -Path $RegPath -Name "NoWinKeys" -Value 0 -PropertyType dword
+}
+
+function Disable-Cortana{
+    #todo: for all users
+    DisableCortana
+}
+
+function Show-FileExtenstions{
+    ShowKnownExtensions
+    Add-ActiveSetupComponent -Id "ShowFileExtensions" -Script "New-Itemproperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'HideFileExt' -Type DWord -Value 0"
 }
