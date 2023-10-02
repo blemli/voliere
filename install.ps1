@@ -15,6 +15,7 @@ Function Install-Chocolatey {
 
 function Install-Sudo{
     choco install gsudo
+
     Write-Output "`nImport-Module 'gsudoModule'"| Add-Content $Profile
     gsudo config CacheMode Auto
 }
@@ -23,6 +24,18 @@ function New-TemporaryDirectory {
     $parent = [System.IO.Path]::GetTempPath()
     $name = [System.IO.Path]::GetRandomFileName()
     New-Item -ItemType Directory -Path (Join-Path $parent $name)
+}
+
+Function Add-PSModulePath{
+    param (
+    [parameter(Mandatory=$True)]
+    [String]$Path
+    )
+
+    $RegPath="Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment"
+    $OriginalPaths = (Get-ItemProperty -Path $RegPath -Name PSModulePath).PSModulePath
+    $NewPath=$OriginalPaths+";$Path"
+    Set-ItemProperty -Path $RegPath -Name PSModulePath –Value $NewPath
 }
 
 $ExecutionPolicy = Get-ExecutionPolicy -Scope Process
@@ -42,5 +55,7 @@ New-Item -Type Directory -Path $ProblemliPath
 Set-Location $ProblemliPath
 git clone https://github.com/blemli/voliere
 cd voliere
+Add-PSModulePath -Path (Get-Location)
 git submodule update --init --recursive
+Add-PSModulePath -Path (Join-Path Get-Location "Win10-Initial-Setup-Script")
 .\Optimize-KioskComputer.ps1
