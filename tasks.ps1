@@ -91,6 +91,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Office installieren"={Install-Office};
     "OneDrive Deinstallieren"={UninstallOneDrive};
     "7zip installieren"={Install-7zip};
+    "PDF24 installieren"={Install-PDF24};
     "Everything installieren"={Install-Everything};
     #"ClassicShell (OpenShell) installieren"={Install-OpenShell};
     "DeepFreeze installieren"={Install-DeepFreeze};

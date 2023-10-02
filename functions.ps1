@@ -390,7 +390,6 @@ Function Disable-WebSearch {
     New-Item -Path $RegPath -name Explorer
     New-ItemProperty -Path $Regpath -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1
     Add-ActiveSetupComponent -id DisableWebSearch -DisplayName "Disable Web Search" -Script "New-Item -Path $RegPath -Name Explorer; New-ItemProperty -Path $Regpath\Explorer -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1"
-
 }
 
 Function Disable-Taskview {
@@ -556,7 +555,7 @@ function Disable-KeyboardLayout() {
         $Layout
     )
     $list = Get-WinUserLanguageList
-    $list.RemoveAll({ $args[0].LanguageTag -clike $Layout })
+    $list.RemoveAll({ $args[0].LanguageTag -clike "$Layout" })
     set-WinUSerLanguageList  $list -Force
 }
 
@@ -595,4 +594,8 @@ Function Clear-Notifications{
         $lastRegistryKeyName = ($notification -split '\\')[-1] -replace '\\$'
         [Windows.UI.Notifications.ToastNotificationManager]::History.Clear($lastRegistryKeyName) 
     }
+}
+
+Function Install-PDF24{
+    choco install PDF24
 }
