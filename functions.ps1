@@ -71,13 +71,13 @@ Function Uninstall-Bloat {
 }
 Function Install-Office {
     #choco install office365business
-    .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml
+    .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml #todo: verysilent
 }
 Function Install-GoogleChrome {
     choco install googlechrome --ignore-checksums
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google"
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google\Chrome"
-    Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk")
+    Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk") #todo: not working yet
     #Todo: remove whats new
     #todo: remind to activate plugins
     #todo: set homepage
@@ -326,7 +326,7 @@ Function Uninstall-Chocolatey {
 }
 Function Add-UnsecureUser($username) {
     Disable-PrivacyExperience
-    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" -Force |  Set-LocalUser -name $username -PasswordNeverExpires:$true
+    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" |  Set-LocalUser -name $username -PasswordNeverExpires:$true
     $UserDir = Join-Path $env:Systemdrive "Users"
     $UserDir = Join-Path $UserDir $username
     new-Item -type Directory -path $userdir
