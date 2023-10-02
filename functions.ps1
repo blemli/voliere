@@ -116,6 +116,7 @@ Function Unpin-TaskbarApp {
 Function Install-DeepFreeze {
     #todo: create a choco or scoop package instead
     .\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
+    Set-ItemProperty -Path 'HKCU:\Control Panel\NotifyIconSettings\8878936794893171756' -Name IsPromoted -Value 1 #Always show Tray Icon
     #todo: manually: add license
 }
 
@@ -598,4 +599,10 @@ Function Clear-Notifications{
 
 Function Install-PDF24{
     choco install PDF24
+}
+
+Function Clear-Taskbar{
+    $RegPath="HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband"
+    Remove-ItemProperty -Path $RegPath -Name Favorites
+    Add-ActiveSetupComponent -Id "ClearTaskbar" -Script "Remove-ItemProperty -Path $RegPath -Name Favorites"
 }

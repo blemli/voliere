@@ -50,7 +50,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName};
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "Taskbar nach Links"={Move-TaskbarLeft};
-    "Alle Infosymbole anzeigen"= {Disable-TrayOverflow};
+    "Tray Verstecken"= {Disable-TrayOverflow};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
     "Bloatware löschen (Skype, Candycrush, etc.)"={Uninstall-Bloat};
     "Store von Taskbar lösen"={Unpin-TaskbarApp -AppName "Microsoft Store"}
@@ -74,6 +74,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Searchbox entfernen"={Disable-SearchBox};
     "Taskview entfernen"={Disable-Taskview};
     "Widgets entfernen"={DisableWidgets};
+    "Taskbar leeren"={Clear-Taskbar}
     "Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper\birds.jpg" -Style Fill};
     "News deaktivieren"={Disable-Feed};
     "ChatIcon deaktivieren"={Hide-ChatIcon};
