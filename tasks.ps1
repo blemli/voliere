@@ -77,6 +77,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper\birds.jpg" -Style Fill};
     "News deaktivieren"={Disable-Feed};
     "Taskbar nach links verschieben"={Move-TaskbarLeft};
+    "Powershell Hilfe installieren"={Update-Help}
     "VLC installieren"={Install-VLC};
     "Google Chrome installieren"={Install-GoogleChrome};
     "Google Chrome als Standard"={Set-DefaultBrowser};
