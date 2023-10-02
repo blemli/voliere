@@ -76,6 +76,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "Widgets entfernen"={DisableWidgets};
     "Wallpaper ändern"={Set-WallPaper -Image ".\assets\wallpaper\birds.jpg" -Style Fill};
     "News deaktivieren"={Disable-Feed};
+    "ChatIcon deaktivieren"={Hide-ChatIcon};
     "Taskbar nach links verschieben"={Move-TaskbarLeft};
     "Powershell Hilfe installieren"={Update-Help}
     "VLC installieren"={Install-VLC};

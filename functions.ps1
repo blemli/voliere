@@ -385,10 +385,12 @@ Function Disable-SearchBox {
 }
 
 Function Disable-WebSearch {
-    Disable-WebSearch
-    $Regpath = "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer"
+    DisableWebSearch
+    $Regpath = "HKCU:\SOFTWARE\Policies\Microsoft\Windows"
+    New-Item -Path $RegPath -name Explorer
     New-ItemProperty -Path $Regpath -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1
-    Add-ActiveSetupComponent -id DisableWebSearch -DisplayName "Disable Web Search" -Script "New-ItemProperty -Path $Regpath -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1"
+    Add-ActiveSetupComponent -id DisableWebSearch -DisplayName "Disable Web Search" -Script "New-Item -Path $RegPath -Name Explorer; New-ItemProperty -Path $Regpath\Explorer -PropertyType dword -Name 'DisableSearchBoxSuggestions' -Value 1"
+
 }
 
 Function Disable-Taskview {
@@ -532,10 +534,15 @@ function Disable-Conexant {
     Set-Service CxUtilSvc -StartupType Disabled
 }
 
-function Remove-ChatIcon {
+function Hide-ChatIcon {
     $RegPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Chat"
-    New-Item $RegPath
-    set-itemproperty -path $regpath -name ChatIcon -value 3 -type dword
+    New-Item -Path $RegPath
+    Set-ItemProperty -Path $regpath -Name ChatIcon -Value 3 -Type dword
+}
+
+function Show-ChatIcon{
+    $RegPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Chat"
+    Remove-Item $RegPath
 }
 
 function Install-Acrobat {
