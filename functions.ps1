@@ -573,3 +573,13 @@ function Show-FileExtenstions{
     ShowKnownExtensions
     Add-ActiveSetupComponent -Id "ShowFileExtensions" -Script "New-Itemproperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'HideFileExt' -Type DWord -Value 0"
 }
+Function Clear-Notifications{
+    [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
+
+    $notifications = Get-ChildItem -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings' | Select-Object -ExpandProperty Name
+
+    foreach ($notification in $notifications) { 
+        $lastRegistryKeyName = ($notification -split '\\')[-1] -replace '\\$'
+        [Windows.UI.Notifications.ToastNotificationManager]::History.Clear($lastRegistryKeyName) 
+    }
+}

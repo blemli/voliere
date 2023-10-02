@@ -96,6 +96,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     #"Startmenü aufräumen"={Import-StartLayout -LayoutPath .\assets\StartLayout\vogelsang.xml -MountPath "$env:Systemdrive"};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Papierkorb leeren"={Clear-RecycleBin -Force}
+    "Notifications löschen"={Clear-Notifications}
     #"Helper deinstallieren"={Uninstall-Helpers};
 }
 }
