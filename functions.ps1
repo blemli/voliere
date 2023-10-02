@@ -629,22 +629,25 @@ Function Set-DefaultTerminal{
         [ValidateSet('Terminal','CMD','Default')]
         $Application
     )
+
     switch($Application){
      "Terminal" {
-        New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value {2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}
-        New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value {E12CFF52-A866-4C77-9A90-F570A7AA2C6B}
+        $DelegationConsole="{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}"
+        $DelegationTerminal="{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
         Break
     }
     "CMD"{
-        New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value {B23D10C0-E52E-411E-9D5B-C09FDF709C7D}
-        New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value {B23D10C0-E52E-411E-9D5B-C09FDF709C7D}
+        $DelegationConsole="{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}"
+        $DelegationTerminal="{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}"
         Break
     }
     "Default"{
-        New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value {00000000-0000-0000-0000-000000000000}
-        New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value {00000000-0000-0000-0000-000000000000}
+        $DelegationConsole="{00000000-0000-0000-0000-000000000000}"
+        $DelegationTerminal="{00000000-0000-0000-0000-000000000000}"
         Break
     }
 }
+    New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value $DelegationConsole -Force
+    New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value $DelegationTerminal -Force
         #todo: for all users
 }
