@@ -65,9 +65,9 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     #"Druckerinstallation verbieten"={Disable-PrinterInstallation};
     "Lockscreen deaktivieren"={DisableLockscreen};
     "Nicht schlafen"={Disable-Sleep};
-    "Französisches Layout entfernen"={Disable-KeyboardLayout};
+    "Französisches Layout entfernen"={Disable-KeyboardLayout -Layout "fr-CH"};
     "Cortana abschalten"={Disable-Cortana};
-    "Benutzer erstellen"={Add-UnsecureUser $global:username};
+    "Benutzer ohne Passwort erstellen"={Add-UnsecureUser $global:username};
     "Autologin aktivieren"={Enable-Autologin};
     "Lockscreen abstellen"={Disable-Lockscreen};
     "Remove and Block Edge"={Disable-Edge};

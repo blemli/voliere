@@ -543,9 +543,13 @@ function Install-Acrobat {
     Remove-Item -Path (Join-Path "$env:public" "Desktop/Adobe Acrobat.lnk")
 }
 
-function Disable-KeyboardLayout($layout = "fr-CH") {
+function Disable-KeyboardLayout() {
+    param(
+        parameter([mandatory=$True])
+        $Layout
+    )
     $list = Get-WinUserLanguageList
-    $list.RemoveAll({ $args[0].LanguageTag -clike 'fr-CH' })
+    $list.RemoveAll({ $args[0].LanguageTag -clike $Layout })
     set-WinUSerLanguageList  $list -Force
 }
 
@@ -555,6 +559,7 @@ function Disable-Sleep() {
 }
 
 function Disable-WindowsHotkeys {
+    #warning, disables all Windows Hotkeys including Win+R etc.
     $RegPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
     New-ItemProperty -Path $RegPath -Name "NoWinKeys" -Value 1 -PropertyType dword
 }
@@ -573,6 +578,7 @@ function Show-FileExtenstions{
     ShowKnownExtensions
     Add-ActiveSetupComponent -Id "ShowFileExtensions" -Script "New-Itemproperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'HideFileExt' -Type DWord -Value 0"
 }
+
 Function Clear-Notifications{
     [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
 
