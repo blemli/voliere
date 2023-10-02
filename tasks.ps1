@@ -96,8 +96,9 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "DeepFreeze installieren"={Install-DeepFreeze};
     #"Startmenü aufräumen"={Import-StartLayout -LayoutPath .\assets\StartLayout\vogelsang.xml -MountPath "$env:Systemdrive"};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
-    "Papierkorb leeren"={Clear-RecycleBin -Force}
-    "Notifications löschen"={Clear-Notifications}
+    "Explorer neustarten"={Stop-Process -Name Explorer};
+    "Papierkorb leeren"={Clear-RecycleBin -Force};
+    "Notifications löschen"={Clear-Notifications};
     #"Helper deinstallieren"={Uninstall-Helpers};
 }
 }
