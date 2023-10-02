@@ -567,7 +567,7 @@ Function Clear-KeyboardLayout(){
     $Layouts | Select-Object -Skip 1 | ForEach-Object {
         $Layouts.Remove($_)
     }
-    set-WinUSerLanguageList $Layouts -Force
+    Set-WinUSerLanguageList $Layouts -Force
 }
 
 function Disable-Sleep() {
