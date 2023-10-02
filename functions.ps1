@@ -545,7 +545,7 @@ function Install-Acrobat {
 
 function Disable-KeyboardLayout() {
     param(
-        parameter([mandatory=$True])
+        [parameter(mandatory=$True)]
         $Layout
     )
     $list = Get-WinUserLanguageList
