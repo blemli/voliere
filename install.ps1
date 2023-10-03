@@ -32,7 +32,7 @@ Function Add-PSModulePath{
     [String]$Path
     )
 
-    $RegPath="Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment"
+    $RegPath="HKLM:\System\CurrentControlSet\Control\Session Manager\Environment"
     $OriginalPaths = (Get-ItemProperty -Path $RegPath -Name PSModulePath).PSModulePath
     $NewPath=$OriginalPaths+";$Path"
     Set-ItemProperty -Path $RegPath -Name PSModulePath –Value $NewPath
