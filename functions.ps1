@@ -6,7 +6,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 Function Uninstall-Helpers {
     choco uninstall git
     uninstall-Chocolatey
-    #Todo: also remove tempdir
+    #TODO: also remove tempdir
 }
 
 Function Set-Dword{
@@ -29,8 +29,9 @@ Function Set-Dword{
 Function Install-VLC {
     choco install vlc
     new-item -ItemType Directory -Path $env:appdata\vlc
-    Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force #todo: for all users
-    remove-item -path "C:\Users\Public\Desktop\VLC media player.lnk"
+    Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force
+    Add-ActiveSetupComponent -DisplayName "VLC" -Id "VLC" -Script "New-Item -ItemType Directory -Path $env:appdata\vlc; Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force"  #TODO find path
+    remove-item -path "$env:public\Desktop\VLC media player.lnk"
 }
 function New-TemporaryDirectory {
     $parent = [System.IO.Path]::GetTempPath()
@@ -71,10 +72,10 @@ Function Uninstall-Program($Program) {
 }
 
 Function Uninstall-Bloat {
-    # UninstallMsftBloat #todo: leave paint and calculator
+    # UninstallMsftBloat #TODO: leave paint and calculator
     Get-AppxPackage -AllUsers "Microsoft.SkypeApp" | Remove-AppxPackage -AllUsers
     Get-AppxPackage "MicrosoftTeams" -AllUsers | Remove-AppxPackage -AllUsers
-    Get-AppxPackage *Xbox* -AllUsers | Remove-AppxPackage -AllUsers #todo: cannot remove...
+    Get-AppxPackage *Xbox* -AllUsers | Remove-AppxPackage -AllUsers #TODO: cannot remove...
     Get-AppxPackage *Spotify* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Solitaire* -AllUsers | Remove-AppxPackage -AllUsers
     Get-AppxPackage *Dropbox* -AllUsers | Remove-AppxPackage -AllUsers
@@ -105,39 +106,31 @@ Function Install-GoogleChrome {
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google\Chrome"
     Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk")
     Remove-Item -Path (Join-Path "$env:userprofile" "Desktop/Google Chrome.lnk")
-    #Todo: remove whats new
-    #todo: remove "welcome"
-    #todo: remind to activate plugins
-    #todo: set homepage
-    #todo: privacy
-}
-Function Set-Homepage {
-    if ([Environment]::Is64BitOperatingSystem) {
-        $RegPath = "HKLM:\Software\Wow6432Node\Policies\Google\Chrome"
-    }
-    else {
-        $RegPath = "HKLM:\SOFTWARE\Policies\Google\Chrome\"
-    }
-    New-Item $RegPath -ItemType Key -Force
-    New-ItemProperty -Path $RegPath -Name "HomepageLocation" -Value "https://treffpunktvogelsang.ch/" -PropertyType String -Force
+    #TODO: remove whats new
+    #TODO: remove "welcome"
+    #TODO: remind to activate plugins
+    #TODO: set homepage
+    #TODO: privacy
 }
 
 Function Disable-Wireless {
-    #Get-NetAdapter | Where-Object { $_.Name -like "*WiFi*" } | Disable-NetAdapter -confirm:$false #todo: correct name?
     Get-NetAdapter WLAN | Disable-NetAdapter -confirm:$false
+}
 
+Function Enable-Wireless {
+    Get-NetAdapter WLAN | Enable-NetAdapter -confirm:$false
 }
 
 Function Disable-Bluetooth {
-    Get-PnpDevice | where { $_.Name -like "*Bluetooth*" } | Disable-PnpDevice -confirm:$false
+    Get-PnpDevice | Where-Object { $_.Name -like "*Bluetooth*" } | Disable-PnpDevice -confirm:$false
 }
 
-Function Disable-AirplaneMode{
-  #Todo: implement
+Function Enable-Bluetooth{
+    Get-PnpDevice | Where-Object { $_.Name -like "*Bluetooth*" } | Enable-PnpDevice -confirm:$false
 }
 
 Function Unpin-TaskbarApp {
-    #todo: doesn't seem to work on windows11
+    #TODO: doesn't seem to work on windows11
     param(
         [String]$AppName
     )
@@ -151,10 +144,10 @@ Function Install-DeepFreeze {
         [Parameter(Mandatory = $true)]
         [String]$DeepFreezePassword
     )
-    #todo: create a choco or scoop package instead
+    #TODO: create a choco or scoop package instead
     .\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
     Set-ItemProperty -Path 'HKCU:\Control Panel\NotifyIconSettings\8878936794893171756' -Name IsPromoted -Value 1 #Always show Tray Icon
-    #todo: manually: add license
+    #TODO: manually: add license
 }
 
 
@@ -163,8 +156,9 @@ Function Disable-Edge {
     DisableEdgeShortcutCreation
     remove-item -path "C:\Users\Public\Desktop\Microsoft Edge.lnk"
     choco install msedgeredirect
-    #todo: disable msedgeredirect update and tray
-    Unpin-TaskbarApp -AppName "Microsoft Edge"
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Robert Maehl Software\MSEdgeRedirect" -Name NoUpdates -Value 1
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Robert Maehl Software\MSEdgeRedirect" -Name NoTray -Value 1
+    Unpin-TaskbarApp -AppName "Microsoft Edge" #maybe: does this work?
 }
 
 Function Set-WallPaper {
@@ -267,7 +261,7 @@ Function Set-DefaultBrowser {
     foreach ($protocol in $protocols) {
         SetUserFTA $protocol "ChromeHTML"
     } #>
-    #todo: Implement
+    #TODO: Implement
 }
 
 Function Uninstall-Chocolatey {
@@ -391,7 +385,7 @@ Function Enable-Autologin {
 }
 
 Function Set-DefaultPDFReader {
-    #Todo: doesn't work
+    #TODO: doesn't work
     $RegistryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice'
     New-ItemProperty -Path $RegistryPath -Name Progid -Value "Applications\Acrobat.exe" -Type String -Force
 }
@@ -530,7 +524,7 @@ Function Install-DotNet {
 Function Install-Everything {
     choco install everything
     remove-item (Join-Path $env:Public "Desktop/Everything.lnk")
-    #todo remove tray icon
+    #TODO remove tray icon
 }
 
 Function Get-ClearText($SecureString) {
@@ -606,18 +600,21 @@ function Disable-KeyboardLayout() {
 }
 
 Function Clear-KeyboardLayout(){
-    #todo: implement for all users
     $Layouts=Get-WinUserLanguageList
     #Remove all but first
     $Layouts | Select-Object -Skip 1 | ForEach-Object {
         $Layouts.Remove($_)
     }
     Set-WinUSerLanguageList $Layouts -Force
+    Add-ActiveSetupComponent -Id "ClearKeyboardLayout" -Script "Clear-KeyboardLayout"
+    # maybe: not ideal
 }
 
 function Disable-Sleep() {
-    Powercfg /Change standby-timeout-dc 0
-    Powercfg /Change monitor-timeout-dc 0
+    powercfg -change -standby-timeout-dc 0
+    powercfg -change -standby-timeout-ac 0
+    powercfg -change -monitor-timeout-dc 0
+    powercfg -change -monitor-timeout-ac 0
 }
 
 function Disable-WindowsHotkeys {
@@ -632,8 +629,8 @@ function Enable-WindowsHotkeys {
 }
 
 function Disable-Cortana{
-    #todo: for all users
     DisableCortana
+    Add-ActiveSetupComponent -Id "DisableCortana" -DisplayName "Disable Cortana" -Script "DisableCortana"
 }
 
 function Show-FileExtenstions{
@@ -653,7 +650,9 @@ Function Clear-Notifications{
 }
 
 Function Install-PDF24{
-    choco install PDF24
+    choco install PDF24 #TODO: options?
+    Remove-Item -Path (Join-Path "$env:public" "Desktop/PDF24.lnk")
+    reg import assets/pdf24.reg
 }
 
 Function Clear-Taskbar{
@@ -697,3 +696,19 @@ Function Set-DefaultTerminal{
     New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value $DelegationTerminal -Force
     Add-ActiveSetupComponent -Id "SetDefaultTerminal" -Script "New-ItemProperty -Path 'HKCU:\Console\%%Startup' -Name DelegationTerminal -Value $DelegationTerminal -Force"
 }
+
+Function Wait-Keypress{
+    #maybe: check if powershell is running interactively
+    Write-Host "Press any key to continue..."
+    $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+
+Function Show-KnownExtensions{
+    ShowKnownExtensions
+    Add-ActiveSetupComponent -Id "ShowKnownExtensions" -Script "ShowKnownExtensions"
+}
+
+  Function Install-WinScan2PDF{
+    choco install WinScan2PDF
+    Remove-Item -Path (Join-Path "$env:public" "Desktop/WinScan2PDF.lnk")
+  }

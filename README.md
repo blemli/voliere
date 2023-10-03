@@ -1,5 +1,5 @@
 # voliere
-Zahme Vögel singen von Freiheit, wilde Vögel fliegen
+Windows is awesome but not out of the box.
 
 [TOC]
 

@@ -45,15 +45,13 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
 }
 
 "Vogelsang-Schreiben"=[ordered]@{
-    #"DotNet Installieren"={Install-DotNet};
     "Administrator darf Scripts ausführen"={Set-ExecutionPolicy Bypass -Scope CurrentUser};
     "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName};
-    "Dateiendungen einblenden"={ShowKnownExtensions};
+    "Dateiendungen einblenden"={Show-KnownExtensions};
     "Taskbar nach Links"={Move-TaskbarLeft};
     "Tray Verstecken"= {Disable-TrayOverflow};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
     "Bloatware löschen (Skype, Candycrush, etc.)"={Uninstall-Bloat};
-    "Store von Taskbar lösen"={Unpin-TaskbarApp -AppName "Microsoft Store"}
     "Fax entfernen"={RemoveFaxPrinter};
     "XPS entfernen"={UninstallXPSPrinter};
     "Admin Shares deaktivieren"={DisableAdminShares};
@@ -89,6 +87,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "uBlock Origin"={Install-UblockOrigin};
     "Acrobat installieren"={Install-Acrobat};
     #"Acrobat als Standard"={Set-DefaultPDFReader};
+    "WinScan2PDF installieren"={Install-WinScan2PDF};
     "Office installieren"={Install-Office};
     "OneDrive Deinstallieren"={UninstallOneDrive};
     "7zip installieren"={Install-7zip};
