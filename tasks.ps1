@@ -3,7 +3,7 @@
 
 
 $Tasks=@{"Vogelsang-Internet"=[ordered]@{
-    "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName}
+    "Computer umbenennen"={Rename-Computer -NewName $global:ComputerName} #todo: ignore existing name
     "Dateiendungen einblenden"={ShowKnownExtensions};
     "3D Objekte verstecken"={Hide3DObjectsFromExplorer};
     "Bloatware löschen (Skype)"={Uninstall-Bloat};
@@ -40,7 +40,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "7zip installieren"={Install-7zip};
     "ClassicShell (OpenShell) installieren"={Install-OpenShell};
     "Papercut installieren"={Install-Papercut};
-    "DeepFreeze installieren"={Install-DeepFreeze};
+    "DeepFreeze installieren"={Install-DeepFreeze -DeepFreezePassword $global:DeepFreezePassword};
     "Helper deinstallieren"={Uninstall-Helpers};
 }
 
@@ -95,7 +95,7 @@ $Tasks=@{"Vogelsang-Internet"=[ordered]@{
     "PDF24 installieren"={Install-PDF24};
     "Everything installieren"={Install-Everything};
     #"ClassicShell (OpenShell) installieren"={Install-OpenShell};
-    "DeepFreeze installieren"={Install-DeepFreeze};
+    "DeepFreeze installieren"={Install-DeepFreeze -DeepFreezePassword $global:DeepFreezePassword};
     #"Startmenü aufräumen"={Import-StartLayout -LayoutPath .\assets\StartLayout\vogelsang.xml -MountPath "$env:Systemdrive"};
     "Windows Update deaktivieren"={Disable-WindowsUpdate};
     "Explorer neustarten"={Stop-Process -Name Explorer};

@@ -3,19 +3,33 @@ Import-Module -Name "./Win10-Initial-Setup-Script/Win11.psm1"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
 . .\ActiveSetup.ps1
 
-#todo: remove globals
-
 Function Uninstall-Helpers {
     choco uninstall git
     uninstall-Chocolatey
     #Todo: also remove tempdir
 }
 
+Function Set-Dword{
+    param(
+        [Parameter(Mandatory=$true)]
+        [String]
+        $Path,
+        [Parameter(Mandatory=$true)]
+        [String]
+        $Name,
+        [Parameter(Mandatory=$true)]
+        [int]
+        $Value
+    )
+
+    New-ItemProperty -Path $Path -Name $Name -PropertyType DWORD -Value $Value -Force
+}
+
 
 Function Install-VLC {
     choco install vlc
     new-item -ItemType Directory -Path $env:appdata\vlc
-    Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force
+    Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force #todo: for all users
     remove-item -path "C:\Users\Public\Desktop\VLC media player.lnk"
 }
 function New-TemporaryDirectory {
@@ -71,14 +85,28 @@ Function Uninstall-Bloat {
 }
 Function Install-Office {
     #choco install office365business
-    .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml #todo: verysilent
+    .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Common\General'        -Name 'PreferCloudSaveLocations' -PropertyType DWORD -Value 0 -Force
+    Add-ActiveSetupComponent -DisplayName "Disable Office Cloud" -Id "DisableOfficeCloud" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Common\General" -Name "PreferCloudSaveLocations" -PropertyType DWORD -Value 0 -Force'
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Common\General'        -Name 'SkyDriveSignInOption' -PropertyType DWORD -Value 0 -Force
+    Add-ActiveSetupComponent -DisplayName "Disable Office SkyDrive" -Id "DisableOfficeSkyDrive" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Common\General" -Name "SkyDriveSignInOption" -PropertyType DWORD -Value 0 -Force'
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Word\options\DOC-PATH' -Name '\DOC-PATH' -Value "$env:userprofile\Desktop" -Force
+    Add-ActiveSetupComponent -DisplayName "Set Word Default Save Location" -Id "SetWordDefaultSaveLocation" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Word\options\" -Name "DOC-PATH" -Value $env:userprofile\Desktop -Force'
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Word\options'          -Name 'DisableBootToOfficeStart' -PropertyType DWORD -Value 1 -Force
+    Add-ActiveSetupComponent -DisplayName "Disable Office Start" -Id "DisableOfficeStart" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Word\options" -Name "DisableBootToOfficeStart" -PropertyType DWORD -Value 1 -Force'
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Word\options'          -Name 'AutosaveInterval' -PropertyType DWORD -Value 1 -Force
+    Add-ActiveSetupComponent -DisplayName "Set Office Autosave Interval" -Id "SetOfficeAutosaveInterval" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Word\options" -Name "AutosaveInterval" -PropertyType DWORD -Value 1 -Force'
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Common\LinkedIn'       -Name 'OfficeLinkedIn' -PropertyType DWORD -Value 0 -Force
+    Add-ActiveSetupComponent -DisplayName "Disable Office LinkedIn" -Id "DisableOfficeLinkedIn" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Common\LinkedIn" -Name "OfficeLinkedIn" -PropertyType DWORD -Value 0 -Force'
 }
 Function Install-GoogleChrome {
     choco install googlechrome --ignore-checksums
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google"
     New-Item -Path "HKLM:\SOFTWARE\Policies\Google\Chrome"
-    Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk") #todo: not working yet
+    Remove-Item -Path (Join-Path "$env:public" "Desktop/Google Chrome.lnk")
+    Remove-Item -Path (Join-Path "$env:userprofile" "Desktop/Google Chrome.lnk")
     #Todo: remove whats new
+    #todo: remove "welcome"
     #todo: remind to activate plugins
     #todo: set homepage
     #todo: privacy
@@ -104,7 +132,12 @@ Function Disable-Bluetooth {
     Get-PnpDevice | where { $_.Name -like "*Bluetooth*" } | Disable-PnpDevice -confirm:$false
 }
 
+Function Disable-AirplaneMode{
+  #Todo: implement
+}
+
 Function Unpin-TaskbarApp {
+    #todo: doesn't seem to work on windows11
     param(
         [String]$AppName
     )
@@ -114,6 +147,10 @@ Function Unpin-TaskbarApp {
 
 
 Function Install-DeepFreeze {
+    param(
+        [Parameter(Mandatory = $true)]
+        [String]$DeepFreezePassword
+    )
     #todo: create a choco or scoop package instead
     .\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
     Set-ItemProperty -Path 'HKCU:\Control Panel\NotifyIconSettings\8878936794893171756' -Name IsPromoted -Value 1 #Always show Tray Icon
@@ -325,7 +362,11 @@ Function Uninstall-Chocolatey {
     $machineKey.Close()
     $userKey.Close()
 }
-Function Add-UnsecureUser($username) {
+Function Add-UnsecureUser() {
+    parameter(
+        [Parameter(Mandatory = $true)]
+        [String]$username
+    )
     Disable-PrivacyExperience
     New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" |  Set-LocalUser -name $username -PasswordNeverExpires:$true
     $UserDir = Join-Path $env:Systemdrive "Users"
@@ -336,12 +377,16 @@ Function Add-UnsecureUser($username) {
 
 
 Function Enable-Autologin {
+    param(
+        [Parameter(Mandatory = $true)]
+        [String]$username
+    )
     $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
     if (Test-Path (Join-Path $RegistryPath AutoLogonSID)) {
         Remove-ItemProperty -Path $RegistryPath -Name AutoLogonSID -Force
     }
     Set-ItemProperty -Path $RegistryPath 'AutoAdminLogon' -Value "1" -Type String 
-    Set-ItemProperty -Path $RegistryPath 'DefaultUsername' -Value "$global:username" -type String 
+    Set-ItemProperty -Path $RegistryPath 'DefaultUsername' -Value "$username" -type String 
     Set-ItemProperty -Path $RegistryPath 'DefaultPassword' -Value "" -type String
 }
 
@@ -484,7 +529,7 @@ Function Install-DotNet {
 
 Function Install-Everything {
     choco install everything
-    Remove-Item (join-path $env:public Desktop\Everything.lnk)
+    remove-item (Join-Path $env:Public "Desktop/Everything.lnk")
     #todo remove tray icon
 }
 
@@ -648,6 +693,7 @@ Function Set-DefaultTerminal{
     }
 }
     New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value $DelegationConsole -Force
+    Add-ActiveSetupComponent -Id "SetDefaultTerminal" -Script "New-ItemProperty -Path 'HKCU:\Console\%%Startup' -Name DelegationConsole -Value $DelegationConsole -Force"
     New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value $DelegationTerminal -Force
-        #todo: for all users
+    Add-ActiveSetupComponent -Id "SetDefaultTerminal" -Script "New-ItemProperty -Path 'HKCU:\Console\%%Startup' -Name DelegationTerminal -Value $DelegationTerminal -Force"
 }
