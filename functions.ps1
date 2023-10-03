@@ -29,8 +29,8 @@ Function Set-Dword{
 Function Install-VLC {
     choco install vlc
     new-item -ItemType Directory -Path $env:appdata\vlc
-    Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force
-    Add-ActiveSetupComponent -DisplayName "VLC" -Id "VLC" -Script "New-Item -ItemType Directory -Path $env:appdata\vlc; Copy-Item -Path .\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force"  #TODO find path
+    Copy-Item -Path $PSScriptRoot\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force
+    Add-ActiveSetupComponent -DisplayName "VLC" -Id "VLC" -Script "New-Item -ItemType Directory -Path $env:appdata\vlc; Copy-Item -Path $PSScriptRoot\assets\vlc\vlcrc -Destination $env:APPDATA\vlc\vlcrc -force"  #TODO find path
     remove-item -path "$env:public\Desktop\VLC media player.lnk"
 }
 function New-TemporaryDirectory {
@@ -86,7 +86,7 @@ Function Uninstall-Bloat {
 }
 Function Install-Office {
     #choco install office365business
-    .\assets\office\setup.exe /configure .\assets\office\vogelsang.xml
+    $PSScriptRoot\assets\office\setup.exe /configure $PSScriptRoot\assets\office\vogelsang.xml
     New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Common\General'        -Name 'PreferCloudSaveLocations' -PropertyType DWORD -Value 0 -Force
     Add-ActiveSetupComponent -DisplayName "Disable Office Cloud" -Id "DisableOfficeCloud" -Script 'New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Common\General" -Name "PreferCloudSaveLocations" -PropertyType DWORD -Value 0 -Force'
     New-ItemProperty -Path 'HKCU:\Software\Microsoft\Office\16.0\Common\General'        -Name 'SkyDriveSignInOption' -PropertyType DWORD -Value 0 -Force
@@ -145,7 +145,7 @@ Function Install-DeepFreeze {
         [String]$DeepFreezePassword
     )
     #TODO: create a choco or scoop package instead
-    .\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
+    $PSScriptRoot\assets\DeepFreeze\DFStd.exe /Install  /PW=$global:DeepFreezePassword /USB /FireWire /NoSplash /NoReboot #/Thawed
     Set-ItemProperty -Path 'HKCU:\Control Panel\NotifyIconSettings\8878936794893171756' -Name IsPromoted -Value 1 #Always show Tray Icon
     #TODO: manually: add license
 }
