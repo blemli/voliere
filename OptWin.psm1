@@ -367,7 +367,8 @@ Function Add-UnsecureUser() {
         [String]$username
     )
     Disable-PrivacyExperience
-    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username" |  Set-LocalUser -name $username -PasswordNeverExpires:$true
+    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username"
+    Set-LocalUser -name $username -PasswordNeverExpires:$true
     $UserDir = Join-Path $env:Systemdrive "Users"
     $UserDir = Join-Path $UserDir $username
     new-Item -type Directory -path $userdir
