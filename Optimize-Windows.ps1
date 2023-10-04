@@ -29,6 +29,7 @@ Function Optimize-Windows() {
     $global:DeepFreezePassword = Read-Password("DeepFreeze Password")
     $global:username = Read-Host -Prompt "Username"
     $Tasks.GetEnumerator() | ForEach-Object {
+        Write-Progress -Activity "Optimize Windows" -Status "Task $($_.Key)" -PercentComplete ($_.Value.count / $Tasks.count * 100)
         Write-Host $_.Key
         Invoke-Command $_.Value | out-null
     }
