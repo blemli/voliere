@@ -361,16 +361,16 @@ Function Uninstall-Chocolatey {
     $machineKey.Close()
     $userKey.Close()
 }
-Function Add-UnsecureUser() {
-    parameter(
+Function new-UnsecureUser() {
+    param(
         [Parameter(Mandatory = $true)]
-        [String]$username
+        [String]$Name
     )
     Disable-PrivacyExperience
-    New-LocalUser -Name $username -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$username"
-    Set-LocalUser -name $username -PasswordNeverExpires:$true
+    New-LocalUser -Name $Name -NoPassword -AccountNeverExpires -Description "Generic Account without login" -UserMayNotChangePassword -FullName "$Name"
+    Set-LocalUser -name $Name -PasswordNeverExpires:$true
     $UserDir = Join-Path $env:Systemdrive "Users"
-    $UserDir = Join-Path $UserDir $username
+    $UserDir = Join-Path $UserDir $Name
     new-Item -type Directory -path $userdir
 }
 
