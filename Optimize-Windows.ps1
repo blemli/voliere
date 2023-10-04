@@ -6,8 +6,7 @@ Function Optimize-Windows() {
     param(
     [Parameter(Mandatory = $True)]
     [ValidateScript(
-    {  $_ -in (Get-ChildItem -path $PresetPath *.ps1).basename },
-        ErrorMessage = 'Please specify a valid preset'
+    {  $_ -in (Get-ChildItem -path $PresetPath *.ps1).basename }#,       ErrorMessage = 'Please specify a valid preset'
     )]
     [ArgumentCompleter(
     {
@@ -18,7 +17,7 @@ Function Optimize-Windows() {
     }
     )]
     [String]$Preset)
-
+    
     . (Join-Path $PresetPath "$Preset.ps1") #get the list of tasks
     Write-Host "Do you want to execute the following ${tasks.count} Tasks?"
     $Tasks.Keys | ForEach-Object {
