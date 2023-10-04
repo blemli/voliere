@@ -26,26 +26,32 @@ function New-TemporaryDirectory {
     New-Item -ItemType Directory -Path (Join-Path $parent $name)
 }
 
-Function Add-PSModulePath{
+Function Add-PSModulePath {
     param (
-    [parameter(Mandatory=$True)]
-    [String]$Path
+        [parameter(Mandatory=$True)]
+        [String]$Path
     )
 
     $RegPath="HKLM:\System\CurrentControlSet\Control\Session Manager\Environment"
-    $OriginalPaths = (Get-ItemProperty -Path $RegPath -Name PSModulePath).PSModulePath
-    $NewPath=$OriginalPaths+";$Path"
-    Set-ItemProperty -Path $RegPath -Name PSModulePath –Value $NewPath
+    $OriginalPaths = (Get-ItemProperty -Path $RegPath -Name PSModulePath).PSModulePath.Split(';')
+
+    if ($OriginalPaths -notcontains "$Path") {
+        $NewPath = ($OriginalPaths -join ';') + ";$Path"
+        Set-ItemProperty -Path $RegPath -Name PSModulePath –Value $NewPath
+    }
 }
 
-$ExecutionPolicy = Get-ExecutionPolicy -Scope Process
-if($ExecutionPolicy -eq "RemoteSigned" -or $ExecutionPolicy -eq "Unrestricted" -or $ExecutionPolicy -eq "Bypass") {
-    Write-Host "ScriptExecution is already allowed ($ExecutionPolicy)"
-} else {
-    Write-Host "ExecutionPolicy is $ExecutionPolicy, changing to RemoteSigned"
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+Function Approve-ScriptExecution{
+    $ExecutionPolicy = Get-ExecutionPolicy -Scope Process
+    if($ExecutionPolicy -eq "RemoteSigned" -or $ExecutionPolicy -eq "Unrestricted" -or $ExecutionPolicy -eq "Bypass") {
+        Write-Host "ScriptExecution is already allowed ($ExecutionPolicy)"
+    } else {
+        Write-Host "ExecutionPolicy is $ExecutionPolicy, changing to RemoteSigned"
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+    }
 }
 
+Approve-ScriptExecution
 Install-Chocolatey
 Install-Sudo
 choco install git
