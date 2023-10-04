@@ -30,6 +30,6 @@ Function Optimize-Windows() {
     $global:username = Read-Host -Prompt "Username"
     $Tasks.GetEnumerator() | ForEach-Object {
         Write-Host $_.Key
-        Invoke-Command $_.Value
+        Invoke-Command $_.Value | out-null
     }
 }
