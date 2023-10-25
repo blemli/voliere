@@ -371,7 +371,7 @@ Function new-UnsecureUser() {
     Set-LocalUser -name $Name -PasswordNeverExpires:$true
     $UserDir = Join-Path $env:Systemdrive "Users"
     $UserDir = Join-Path $UserDir $Name
-    new-Item -type Directory -path $userdir
+    new-Item -type Directory -path $userdir #Todo only if not exists
 }
 
 
@@ -518,6 +518,7 @@ Function Set-ChromeDefaultBrowser {
 
 
 Function Disable-Lockscreen {
+    #Todo: what about DisableLockscreen?
     $Path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
     New-Item -Path $Path
     New-ItemProperty -Path $Path -Name "NoLockScreen" -Type dword -value 1 -Force
@@ -608,6 +609,7 @@ function Show-ChatIcon{
 function Install-Acrobat {
     choco install adobereader -params '"/UpdateMode 0"'
     Remove-Item -Path (Join-Path "$env:public" "Desktop/Adobe Acrobat.lnk")
+    #todo: disable tour
 }
 
 function Disable-KeyboardLayout() {
