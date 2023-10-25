@@ -1,3 +1,7 @@
 {
-    "explorer.excludeGitIgnore": true
+    "explorer.excludeGitIgnore": true,
+    "cSpell.words": [
+        "psbuild",
+        "Voliere"
+    ]
 }

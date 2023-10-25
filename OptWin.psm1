@@ -688,33 +688,62 @@ Function Clear-Taskbar{
     Add-ActiveSetupComponent -Id "ClearTaskbar" -Script "Remove-ItemProperty -Path $RegPath -Name Favorites"
 }
 
-Function Set-DefaultTerminal{
+
+Function Set-DefaultTerminal {
+    <#
+        .SYNOPSIS
+        Sets the default terminal application on a Windows system by modifying the Windows Registry.
+        
+        .DESCRIPTION
+        The Set-DefaultTerminal function is designed to alter the default terminal application for the current user on a Windows machine. It modifies the Windows Registry to set the terminal application to one of three possible choices: Windows Terminal, CMD, or back to the system default. This can be useful in scenarios where you need to programmatically switch the terminal to suit different workflows or user preferences.
+        
+        .PARAMETER Application
+        A mandatory parameter specifying the terminal application to set as default. Accepts one of the following values: 'Terminal', 'CMD', or 'Default'.
+        
+        .EXAMPLE
+        Set-DefaultTerminal -Application 'Terminal'
+        
+        This will set the Windows Terminal as the default terminal application for the current user.
+        
+        .EXAMPLE
+        Set-DefaultTerminal -Application 'CMD'
+        
+        This will set the CMD as the default terminal application for the current user.
+        
+        .EXAMPLE
+        Set-DefaultTerminal -Application 'Default'
+        
+        This will reset the terminal application to the system default.
+        
+        .NOTES
+        The function currently applies only to the current user. Modifying the registry settings for all users is noted as a 'to-do'.
+        #>
+
     param(
-        [parameter(mandatory=$True)]
-        [ValidateSet('Terminal','CMD','Default')]
+        [parameter(mandatory = $True)]
+        [ValidateSet('Terminal', 'CMD', 'Default')]
         $Application
     )
-
-    switch($Application){
-     "Terminal" {
-        $DelegationConsole="{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}"
-        $DelegationTerminal="{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
-        Break
+    switch ($Application) {
+        "Terminal" {
+            $DelegationConsole = "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}"
+            $DelegationTerminal = "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
+            Break
+        }
+        "CMD" {
+            $DelegationConsole = "{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}"
+            $DelegationTerminal = "{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}"
+            Break
+        }
+        "Default" {
+            $DelegationConsole = "{00000000-0000-0000-0000-000000000000}"
+            $DelegationTerminal = "{00000000-0000-0000-0000-000000000000}"
+            Break
+        }
     }
-    "CMD"{
-        $DelegationConsole="{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}"
-        $DelegationTerminal="{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}"
-        Break
-    }
-    "Default"{
-        $DelegationConsole="{00000000-0000-0000-0000-000000000000}"
-        $DelegationTerminal="{00000000-0000-0000-0000-000000000000}"
-        Break
-    }
-}
-    New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value $DelegationConsole -Force
+    New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationConsole -Value $DelegationConsole -Force -PropertyType String
     Add-ActiveSetupComponent -Id "SetDefaultTerminal" -Script "New-ItemProperty -Path 'HKCU:\Console\%%Startup' -Name DelegationConsole -Value $DelegationConsole -Force"
-    New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value $DelegationTerminal -Force
+    New-ItemProperty -Path "HKCU:\Console\%%Startup" -Name DelegationTerminal -Value $DelegationTerminal -Force -PropertyType String
     Add-ActiveSetupComponent -Id "SetDefaultTerminal" -Script "New-ItemProperty -Path 'HKCU:\Console\%%Startup' -Name DelegationTerminal -Value $DelegationTerminal -Force"
 }
 
@@ -722,6 +751,7 @@ Function Wait-Keypress{
     #maybe: check if powershell is running interactively
     Write-Host "Press any key to continue..."
     $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    $x | out-null
 }
 
 Function Show-KnownExtensions{

@@ -1,4 +1,4 @@
-# voliere
+# Voliere
 Windows is awesome but not out of the box.
 
 [TOC]
@@ -13,6 +13,6 @@ Windows is awesome but not out of the box.
 | psbuild   | 
 
 ## Learned
-- No need to be afraid of scriptblocks, they are cool.
+- No need to be afraid of script-blocks, they are cool.
 - Test early test often
-- [ActiveSetup](https://www.clearbyte.ch/active-setup/) is genious!
+- [ActiveSetup](https://www.clearbyte.ch/active-setup/) is genius!
