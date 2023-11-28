@@ -476,6 +476,15 @@ Function Move-TaskbarLeft {
     Set-TaskbarAlignement 0
 }
 
+<#
+.SYNOPSIS
+    Move Taskbar to Center of Screen BECAUSE it looks better on huge Screens
+.DESCRIPTION
+    Move Taskbar to Center of Screen BECAUSE it looks better on huge Screens.
+    This is also the Windows 11 default.
+.EXAMPLE
+    Move-TaskbarCenter
+#>
 Function Move-TaskbarCenter {
     Set-TaskbarAlignement 1
 }
@@ -484,6 +493,17 @@ Function Move-TaskbarRight {
     Set-TaskbarAlignement 2
 }
 
+<#
+.SYNOPSIS
+    Remove all the default Printers BECAUSE they are cluttering the Printer Dialog
+.DESCRIPTION
+    Remove all the Bloated Printers from Windows.
+    Keeps the PDF one as an Exception.
+    Make sure to run this Script at the end so it can also
+    remove the Printers that were installed by other Programs.
+.EXAMPLE
+    Move-TaskbarCenter
+#>
 Function Remove-BloatPrinters {
     $Printers = get-printer
     foreach ($Printer in $Printers) {
