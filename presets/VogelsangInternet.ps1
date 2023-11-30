@@ -39,3 +39,19 @@ $Tasks=[ordered]@{
     "DeepFreeze installieren"={Install-DeepFreeze -DeepFreezePassword $global:DeepFreezePassword};
     "Helper deinstallieren"={Uninstall-Helpers};
 }
+
+$Inputs=@{
+    "Computername"=@{
+        "Secret"=$false
+        "Mandatory"=$true
+    }
+    "DeepFreezePassword"=@{
+        "Title"="DeepFreeze Password"
+        "Secret"=$true
+        "Mandatory"=$true
+    }
+    "Username"=@{
+        "Secret"=$false
+        "Mandatory"=$true
+    }
+}

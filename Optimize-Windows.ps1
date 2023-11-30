@@ -11,19 +11,28 @@ Function Optimize-Windows() {
     [ArgumentCompleter(
     {
         param($cmd, $param, $wordToComplete)
-        # This is the duplicated part of the code in the [ValidateScipt] attribute.
         [array] $validValues = (Get-ChildItem -path $PresetPath *.ps1).basename
         $validValues -like "$wordToComplete*"
     }
     )]
     [String]$Preset)
     
-    . (Join-Path $PresetPath "$Preset.ps1") #get the list of tasks
+    . (Join-Path $PresetPath "$Preset.ps1") #get the list of tasks and inputs
     Write-Host "Do you want to execute the following ${tasks.count} Tasks?"
     $Tasks.Keys | ForEach-Object {
-        Write-Host "- $_"
+        Write-Host "☐ $_"
     }
     Wait-Keypress
+    Write-Information "Reading Inputs"
+    $Inputs.GetEnumerator() | ForEach-Object {
+        # if not interactive and has a default
+        if ($PSCmdlet.ParameterSetName -eq "__AllParameterSets" -and $_.Value.Default) {
+            $Value=$_.Value.Default
+        }
+        $_.Default = Read-Host -Prompt $Input.Title
+        Write-Host $Input.Default
+        New-Variable -Name $_.Key -Value $Value -Force -Scope Global
+    }
     Write-Information "Processing $Tasks.count Tasks"
     $global:Computername = Read-Host -Prompt "Computername" 
     $global:DeepFreezePassword = Read-Password("DeepFreeze Password")
